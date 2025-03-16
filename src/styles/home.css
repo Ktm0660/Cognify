@@ -1,0 +1,28 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    text-align: center;
+}
+
+.welcome-container {
+    text-align: center;
+}
+
+/* White text box */
+.welcome-box {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin: auto;
+}
+
+.game-container {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
