@@ -32,3 +32,18 @@ input, select {
     margin: 10px;
 }
 
+/* Example for top tab */
+.top-tab {
+    height: 50px; /* Set a fixed height */
+    position: sticky; /* Change from fixed to sticky */
+    top: 0;
+    width: 100%;
+    background-color: #fff; /* Background color to ensure visibility */
+    z-index: 1000; /* Ensure it is above other content */
+}
+
+/* Adjust mainContainer to account for the top tab */
+.mainContainer {
+    padding-top: 100px; /* Adjust this value to be equal to the height of the top tab */
+    /* Remove margin-top if it exists */
+}

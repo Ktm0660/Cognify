@@ -8,11 +8,15 @@ function App() {
     return (
         <Router>
             <div className="App">
+              <div class="top-tab">
               <Header />
+             </div>
+              <div className="mainContainer">
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/game" element={<Game />} />
                 </Routes>
+                </div>
             </div>
         </Router>
     );
