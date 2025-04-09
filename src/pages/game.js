@@ -1,8 +1,8 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import "../styles/game.css";
 import stringSimilarity from "string-similarity";
 import { auth, db } from "../firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 export default function Game() {
     const [showInstructions, setShowInstructions] = useState(true);
@@ -19,7 +19,45 @@ export default function Game() {
     const [answers, setAnswers] = useState([]);
     const [startTime, setStartTime] = useState(null);
     const [gameOver, setGameOver] = useState(false);
+    const [alreadyPlayed, setAlreadyPlayed] = useState(false); // Track if the user has already played
+    const [errorMessage, setErrorMessage] = useState(""); // Track error messages
     const guessCountRef = useRef(0);
+
+    // Check Firestore for existing results when the component mounts
+    useEffect(() => {
+        const checkIfAlreadyPlayed = async () => {
+            const user = auth.currentUser;
+            if (user) {
+                const resultRef = doc(db, "users", user.uid, "patternGuessingGame", "result");
+                const resultDoc = await getDoc(resultRef);
+                if (resultDoc.exists()) {
+                    setAlreadyPlayed(true); // User has already played
+                }
+            }
+        };
+
+        checkIfAlreadyPlayed();
+    }, []);
+
+    const handleStartGame = async () => {
+        const user = auth.currentUser;
+
+        if (user) {
+            const resultRef = doc(db, "users", user.uid, "patternGuessingGame", "result");
+            const resultDoc = await getDoc(resultRef);
+
+            if (resultDoc.exists()) {
+                setAlreadyPlayed(true); // Mark as already played
+                setErrorMessage("You have already completed this game. You cannot play again.");
+                return; // Prevent the game from starting
+            }
+        }
+
+        console.log("Game started! ", Date.now());
+        setStartTime(Date.now()); // Start the timer
+        setShowInstructions(false);
+        setErrorMessage(""); // Clear any previous error messages
+    };
 
     const checkPattern = () => {
         const sequence = [Number(num1), Number(num2), Number(num3)];
@@ -38,9 +76,14 @@ export default function Game() {
     };
 
     const checkFinalGuess = async () => {
+        if (alreadyPlayed) {
+            setGuessResult("You have already completed this game. You cannot make another guess.");
+            return; // Prevent further guesses
+        }
+
         const formattedGuess = finalGuess.toLowerCase().trim();
         const updatedAnswers = [...answers, formattedGuess];
-        setAnswers(updatedAnswers); 
+        setAnswers(updatedAnswers);
 
         const correctAnswers = [
             "numbers must be in increasing order",
@@ -100,16 +143,16 @@ export default function Game() {
             "number can't decrease or be the same",
             "numbers that go up by any amount",
         ];
-    
+
         // Get best match from the list of correct answers
         const bestMatch = stringSimilarity.findBestMatch(formattedGuess, correctAnswers);
-        console.log('Best match:', bestMatch.bestMatch.target, 'Score:', bestMatch.bestMatch.rating);
+        console.log("Best match:", bestMatch.bestMatch.target, "Score:", bestMatch.bestMatch.rating);
 
         // If the best match score is 0.9 or higher, consider it correct
         if (bestMatch.bestMatch.rating >= 0.9) {
             const timeCorrect = Date.now() - startTime;
             setGuessResult(`✅ Correct! The pattern is an increasing sequence. (Matched: "${bestMatch.bestMatch.target}")`);
-            setTimeSpentCorrect(timeCorrect); // Calculate time spent   
+            setTimeSpentCorrect(timeCorrect); // Calculate time spent
             setGameOver(true); // Set game over state
 
             // 🔥 Save to Firestore
@@ -126,20 +169,21 @@ export default function Game() {
                     incorrectList: incorrectList,
                 }, { merge: true });
             }
-
         } else {
             setGuessResult("❌ Incorrect! Try again.");
             const incorrectTime = Date.now() - startTime;
-            setTimeSpentIncorrect(prev => [...prev, incorrectTime]);
+            setTimeSpentIncorrect((prev) => [...prev, incorrectTime]);
         }
     };
-    
-    const handleStartGame = () => {
-        console.log("Game started! ", Date.now());
-        setStartTime(Date.now()); // Start the timer
-        setShowInstructions(false)
-    }
 
+    if (alreadyPlayed) {
+        return (
+            <div className="already-played-container">
+                <h2>Game Already Completed</h2>
+                <p>You have already completed this game. Thank you for playing!</p>
+            </div>
+        );
+    }
 
     if (showInstructions) {
         return (
@@ -151,25 +195,24 @@ export default function Game() {
                     <p>2) You may propose as many other sequences of three numbers as you like. After each guess, you will be told whether it follows the rule or not. You will also see a history of all guesses, so you don’t need to memorize them.</p>
                     <p>3) Once you feel confident, you may make one final guess about the rule. Again, your goal is to determine the underlying pattern as accurately as possible.</p>
                     <button onClick={handleStartGame}>Start Game</button>
+                    {errorMessage && <p className="error-message">{errorMessage}</p>}
                 </div>
             </div>
         );
     }
 
-
     return (
         <div className="game-container">
             <div className="sequences">
                 <div className="correct-box">
-                <h3>✅ Follows the Pattern</h3>
-                <div className="sequence-list">
-                    <ul>
-                        {correctList.map((seq, index) => (
-                            <li key={index} className="sequence-item">{seq}</li>
-                        ))}
-                    </ul>
-                </div>
-
+                    <h3>✅ Follows the Pattern</h3>
+                    <div className="sequence-list">
+                        <ul>
+                            {correctList.map((seq, index) => (
+                                <li key={index} className="sequence-item">{seq}</li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
                 <div className="incorrect-box">
                     <h3>❌ Does Not Follow</h3>
