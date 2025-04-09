@@ -1,0 +1,38 @@
+/* Container to center the form */
+.getinfo-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px; /* adjust for header height */
+  }
+  
+  /* Main form wrapper */
+  .getinfo-form {
+    background-color: white;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-sizing: border-box;
+  }
+  
+  /* Heading */
+  .getinfo-form h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #007bff;
+  }
+  
+  /* Error message */
+  .getinfo-error {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  

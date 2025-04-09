@@ -1,6 +1,7 @@
 /* Header styling */
 .header {
     display: flex;
+    position: sticky;
     justify-content: space-between;
     align-items: center;
     padding: 15px 30px;
@@ -11,6 +12,7 @@
     width: 100%;
     box-sizing: border-box;
     top: 0;
+    height: 60px;
 }
 
 /* Logo styling */
@@ -48,4 +50,36 @@
 /* Hover effect */
 .nav-links a:hover {
     background-color: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 4px 15px;
+        height: auto;
+    }
+
+    .logo {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .nav-links a {
+        display: block;
+        width: 100%;
+        padding: 10px;
+    }
+    
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
 }

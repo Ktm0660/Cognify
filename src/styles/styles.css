@@ -18,6 +18,12 @@ button:active {
     transform: scale(0.98);
 }
 
+h2 {
+    font-size: 24px;
+    margin-top: 0px;
+    color: #333;
+}
+
 /* Disabled button */
 button:disabled {
     background-color: #ccc;
@@ -32,18 +38,11 @@ input, select {
     margin: 10px;
 }
 
-/* Example for top tab */
-.top-tab {
-    height: 50px; /* Set a fixed height */
-    position: sticky; /* Change from fixed to sticky */
-    top: 0;
-    width: 100%;
-    background-color: #fff; /* Background color to ensure visibility */
-    z-index: 1000; /* Ensure it is above other content */
-}
-
 /* Adjust mainContainer to account for the top tab */
 .mainContainer {
-    padding-top: 100px; /* Adjust this value to be equal to the height of the top tab */
+    margin-top: 60px; /* Adjust this value to be equal to the height of the top tab */
+    max-height: calc(100vh - 60px); /* Adjust this value to be equal to the height of the top tab */
+    overflow-y: auto; /* Enable vertical scrolling if content exceeds the height */
+    padding: 15px;
     /* Remove margin-top if it exists */
 }

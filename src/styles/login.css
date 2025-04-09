@@ -1,0 +1,35 @@
+.login-container {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-form {
+    padding: 20px;
+    padding-top: 0px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+}
+
+.signup-redirect {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .signup-link {
+    color: #007bff;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .signup-link:hover {
+    text-decoration: underline;
+  }
+  

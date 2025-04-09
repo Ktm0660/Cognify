@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import "../styles/game.css";
 import stringSimilarity from "string-similarity";
+import { auth, db } from "../firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function Game() {
     const [showInstructions, setShowInstructions] = useState(true);
@@ -12,6 +14,12 @@ export default function Game() {
     const [showFinalGuess, setShowFinalGuess] = useState(false);
     const [finalGuess, setFinalGuess] = useState("");
     const [guessResult, setGuessResult] = useState("");
+    const [timeSpentCorrect, setTimeSpentCorrect] = useState(null);
+    const [timeSpentIncorrect, setTimeSpentIncorrect] = useState([]);
+    const [answers, setAnswers] = useState([]);
+    const [startTime, setStartTime] = useState(null);
+    const [gameOver, setGameOver] = useState(false);
+    const guessCountRef = useRef(0);
 
     const checkPattern = () => {
         const sequence = [Number(num1), Number(num2), Number(num3)];
@@ -23,14 +31,17 @@ export default function Game() {
             setIncorrectList([...incorrectList, sequence.join(", ")]);
         }
 
+        guessCountRef.current += 1;
         setNum1("");
         setNum2("");
         setNum3("");
     };
 
-    const checkFinalGuess = () => {
+    const checkFinalGuess = async () => {
         const formattedGuess = finalGuess.toLowerCase().trim();
-        
+        const updatedAnswers = [...answers, formattedGuess];
+        setAnswers(updatedAnswers); 
+
         const correctAnswers = [
             "numbers must be in increasing order",
             "each number must be larger than the last",
@@ -86,19 +97,50 @@ export default function Game() {
             "valid sequences must always trend upwards",
             "the sequence must be in a strictly upward pattern",
             "any increasing number",
+            "number can't decrease or be the same",
+            "numbers that go up by any amount",
         ];
     
         // Get best match from the list of correct answers
         const bestMatch = stringSimilarity.findBestMatch(formattedGuess, correctAnswers);
-    
-        // If the best match score is 0.7 or higher, consider it correct
-        if (bestMatch.bestMatch.rating >= 0.7) {
+        console.log('Best match:', bestMatch.bestMatch.target, 'Score:', bestMatch.bestMatch.rating);
+
+        // If the best match score is 0.9 or higher, consider it correct
+        if (bestMatch.bestMatch.rating >= 0.9) {
+            const timeCorrect = Date.now() - startTime;
             setGuessResult(`✅ Correct! The pattern is an increasing sequence. (Matched: "${bestMatch.bestMatch.target}")`);
+            setTimeSpentCorrect(timeCorrect); // Calculate time spent   
+            setGameOver(true); // Set game over state
+
+            // 🔥 Save to Firestore
+            const user = auth.currentUser;
+            if (user) {
+                const resultRef = doc(db, "users", user.uid, "patternGuessingGame", "result");
+                await setDoc(resultRef, {
+                    timeSpentCorrect: timeCorrect,
+                    timeSpentIncorrect: timeSpentIncorrect,
+                    completedAt: new Date(),
+                    guessCount: guessCountRef.current,
+                    answers: updatedAnswers,
+                    correctList: correctList,
+                    incorrectList: incorrectList,
+                }, { merge: true });
+            }
+
         } else {
             setGuessResult("❌ Incorrect! Try again.");
+            const incorrectTime = Date.now() - startTime;
+            setTimeSpentIncorrect(prev => [...prev, incorrectTime]);
         }
     };
     
+    const handleStartGame = () => {
+        console.log("Game started! ", Date.now());
+        setStartTime(Date.now()); // Start the timer
+        setShowInstructions(false)
+    }
+
+
     if (showInstructions) {
         return (
             <div className="instructions-container">
@@ -108,11 +150,12 @@ export default function Game() {
                     <p>1) I will give you one example sequence that follows the rule: <strong>2-4-6</strong>.</p>
                     <p>2) You may propose as many other sequences of three numbers as you like. After each guess, you will be told whether it follows the rule or not. You will also see a history of all guesses, so you don’t need to memorize them.</p>
                     <p>3) Once you feel confident, you may make one final guess about the rule. Again, your goal is to determine the underlying pattern as accurately as possible.</p>
-                    <button onClick={() => setShowInstructions(false)}>Start Game</button>
+                    <button onClick={handleStartGame}>Start Game</button>
                 </div>
             </div>
         );
     }
+
 
     return (
         <div className="game-container">
@@ -157,7 +200,7 @@ export default function Game() {
                         value={finalGuess} 
                         onChange={(e) => setFinalGuess(e.target.value)} 
                     />
-                    <button onClick={checkFinalGuess}>Submit Guess</button>
+                    <button onClick={checkFinalGuess} disabled={gameOver}>Submit Guess</button>
                     {guessResult && <p className="guess-result">{guessResult}</p>}
                 </div>
             )}
