@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import { auth } from "../firebase";
+import { doc, getDoc } from "firebase/firestore"; // ✅ NEW
+import { db } from "../firebase"; // ✅ NEW
 import "../styles/login.css";
 
 function Login() {
@@ -9,13 +11,27 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+  
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      alert("Login successful!");
+      const user = auth.currentUser;
+  
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(userRef);
+  
+        const data = docSnap.data();
+        if (data?.completedStarterInfo) {
+          navigate("/"); // ✅ Go to home if info is already filled
+        } else {
+          navigate("/info"); // 📝 Go to info page if not filled
+        }
+      }
     } catch (err) {
       setError("Invalid email or password.");
     }

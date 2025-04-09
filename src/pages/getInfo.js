@@ -67,6 +67,8 @@ function GetInfo() {
       }, { merge: true });
 
       navigate("/");
+      window.location.reload(); // ✅ Forces App.js to re-check starter info and route properly
+      
     } catch (err) {
       setError("Error saving info. Try again.");
       console.error(err);

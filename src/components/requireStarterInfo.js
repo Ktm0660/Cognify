@@ -1,41 +1,46 @@
-// src/components/RequireStarterInfo.js
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "../firebase"; // Make sure this is exported
+import { db } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
 const RequireStarterInfo = ({ children }) => {
   const navigate = useNavigate();
   const [checking, setChecking] = useState(true);
+  const [isVerified, setIsVerified] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const userRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(userRef);
+      if (!user) {
+        // Not logged in
+        navigate("/login");
+        return;
+      }
 
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          if (!data.completedStarterInfo) {
-            navigate("/info");
-          }
+      const userRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(userRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        if (data.completedStarterInfo) {
+          setIsVerified(true);
         } else {
-          navigate("/info");
+          navigate("/info"); // Redirect if starter info not complete
         }
       } else {
-        // If not logged in, maybe redirect to login or allow access
+        navigate("/info"); // Redirect if no user document
       }
+
       setChecking(false);
     });
 
     return () => unsubscribe();
   }, [navigate]);
 
-  if (checking) return null; // Or a spinner
+  if (checking) return null; // optional loading spinner
 
-  return children;
+  return isVerified ? children : null;
 };
 
 export default RequireStarterInfo;
