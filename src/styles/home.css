@@ -1,27 +1,129 @@
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* Home container setup */
+.home-container {
+    padding: 100px 30px 50px;
+    background: linear-gradient(to bottom right, #f0f8ff, #e3efff);
+    min-height: 100vh;
+    font-family: "Segoe UI", sans-serif;
+  }
+  
+  /* Page header */
+  .home-header {
     text-align: center;
-    padding-top: 100px;
-}
-
-.welcome-container {
-    text-align: center;
-}
-
-/* White text box */
-.welcome-box {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin: auto;
-}
-
-.game-container {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
+    margin-bottom: 50px;
+  }
+  
+  .home-header h1 {
+    font-size: 2.8rem;
+    color: #007bff;
+    margin-bottom: 10px;
+  }
+  
+  .welcome {
+    font-size: 1.2rem;
+    color: #333;
+  }
+  
+  .subtext {
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  /* Section Titles */
+  .section {
+    margin-top: 50px;
+  }
+  
+  .section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #003366;
+  }
+  
+  /* Game Grid */
+  .game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 30px;
+    padding: 0 10px;
+  }
+  
+  /* Game Cards */
+  .game-card {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 25px 20px;
+    box-shadow: 0 8px 20px rgba(0, 123, 255, 0.1);
+    transition: all 0.25s ease-in-out;
+    cursor: pointer;
+    text-align: left;
+    border-left: 6px solid #007bff;
+  }
+  
+  .game-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0, 123, 255, 0.2);
+    background-color: #f8fbff;
+  }
+  
+  .game-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+    color: #007bff;
+  }
+  
+  .game-card p {
+    color: #444;
+    font-size: 0.95rem;
+  }
+  
+  /* Responsive tweaks */
+  @media (max-width: 600px) {
+    .home-header h1 {
+      font-size: 2.2rem;
+    }
+  
+    .section h2 {
+      font-size: 1.4rem;
+    }
+  
+    .game-card h3 {
+      font-size: 1.1rem;
+    }
+  
+    .game-card p {
+      font-size: 0.85rem;
+    }
+  }
+/* SECTION COLOR THEMES */
+.section.solo h2 {
+    color: #ff5e5e;
+  }
+  
+  .section.vs-computer h2 {
+    color: #ff9800;
+  }
+  
+  .section.education h2 {
+    color: #4caf50;
+  }
+  
+  .section.data h2 {
+    color: #673ab7;
+  }
+  
+  .section.solo .game-card {
+    border-left-color: #ff5e5e;
+  }
+  
+  .section.vs-computer .game-card {
+    border-left-color: #ff9800;
+  }
+  
+  .section.education .game-card {
+    border-left-color: #4caf50;
+  }
+  
+  .section.data .game-card {
+    border-left-color: #673ab7;
+  }
+    

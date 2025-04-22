@@ -83,3 +83,22 @@
         width: 100%;
     }
 }
+/* Button styled like a nav link */
+.nav-links .nav-button {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.nav-links .nav-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+.nav-links li {
+    display: inline-flex;
+    align-items: center;
+}

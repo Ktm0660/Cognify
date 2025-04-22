@@ -1,10 +1,22 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "../styles/header.css";
 import { useState, useEffect } from "react";
+import { auth } from "../firebase"; // make sure this is correctly imported
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+
+    return () => unsubscribe(); // cleanup listener on unmount
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -17,6 +29,15 @@ export default function Header() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/"); // redirect to home or login screen
+    } catch (error) {
+      console.error("Logout error:", error.message);
+    }
+  };
+
   return (
     <nav className="header">
       <div className="header-top">
@@ -28,7 +49,6 @@ export default function Header() {
         )}
       </div>
 
-      {/* Conditionally show nav links based on screen size and toggle state */}
       {(!isMobile || menuOpen) && (
         <ul className="nav-links">
           <li>
@@ -41,11 +61,20 @@ export default function Header() {
               Pattern Guessing Game
             </NavLink>
           </li>
-          <li>
-            <NavLink to="/login" className={({ isActive }) => isActive ? "active-link" : ""}>
-              Login
-            </NavLink>
-          </li>
+
+          {!user ? (
+            <li>
+              <NavLink to="/login" className={({ isActive }) => isActive ? "active-link" : ""}>
+                Login
+              </NavLink>
+            </li>
+          ) : (
+            <li>
+              <button onClick={handleLogout} className="nav-button">
+                Logout
+              </button>
+            </li>
+          )}
         </ul>
       )}
     </nav>

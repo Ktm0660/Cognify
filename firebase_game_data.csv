@@ -1,0 +1,60 @@
+age,decisionConfidence,thinkingStyle,profession,puzzleFrequency,analyticalAbility,completedStarterInfo,city,name,riskTaking,education,income,politicalParty,gender,state,gameTheoryFamiliarity,user_id
+40,,,Banking,,,True,Burley,Patty D,,High School,,,Female,ID,,0xTqS1JR1TMXl09lcETKDylmNcL2
+40,,,,,,True,Pocatello,Shanny,,,,,Female,ID,,131uSCqPgtQFdBRsjazSlCKUCTi1
+44,5,Balanced,Accouting,Always,5,True,Rexburg,Trish ,3,Some College,50-75k,Republican,Female,ID,3,1ml71hmaKHQ2P9hLkzTkzESN9kb2
+56,,,,,,True,Boise,Gary,,,,,Male,ID,,2vdwhLI75xPWPXf6Mcop6DZB0zM2
+36,,,Information Systems,,,True,Chubbuck,Nacho,,Undergraduate,,,Male,ID,,3CIIuYihzWYcjndNRemM5Ane3op2
+26,,,,,,True,Meridian,Kailee Elliott,,,,,Female,ID,,3ifP4sWzsyU8ytXH6TIRrTnVP5g1
+30,4,Analytical,,Sometimes,3,True,Meridian,Lindsay ,1,Some College,25-50k,Democrat,Female,ID,1,40v7Qh9SRlPcVYpQaCUzHC4Vvco2
+25,,,,,,True,Pocatello,Timothy Martinez ,,,,,Male,ID,,4UgxGEHf0FXotC7poFnODxytptb2
+34,,,,,,True,Pocatello ,Kayla Rasmussen,,Graduate,,,Prefer not to say,ID,,6IngTw3szTbYNis5x07Qvi691ws2
+25,,,,,,True,Iona,Tara,,High School,,,Female,ID,,6gIpGeDvo3XWQRH4WWKwgoKnYoh2
+41,4,Creative,,Sometimes,4,True,Pocatello,Stephanie Tocher,4,High School,>150k,Independent,Female,ID,3,7W6lfcdqkwMSOpliyVMYyE9oQJG2
+26,,,,,,True,Downey,Berklee Sampson,,,,,Female,ID,,7fgKFAHBcvgLAAfpxEqL6vOFzqi1
+31,4,Analytical,Executive,Often,4,True,Pocatello,Justin,4,Graduate,100-150k,Other,Male,ID,4,7t7s7Es4sZRLQ7VGaQS2wF0Pur33
+26,,,,,,True,Pocatello,Ashley Marie Wuthrich-Hoffman,,Graduate,25-50k,,Female,ID,,86v8rzXTHNP8nUmkqBVGg8uxjtK2
+41,2,Creative,Lending,Always,3,True,Idaho Falls,Catie Andersen,3,Some College,75-100k,Republican,Female,ID,1,918W6soBf3dtupaqtUnGDfLt4NY2
+22,,,Art Teacher,,,True,Boise,haley,,Some College,,,Female,ID,,AbE9ZbrOjkgtVgUVDXmM4YXOB5l1
+27,,,,,,True,Pocatello,Carly Peterson,,,,,Female,ID,,DQ21B2OgQLZxIDcm5EYSuotk05y1
+34,,,,,,True,Pocatello,Liz Card,,High School,,,Female,ID,,EOyMChb6lqZq6gXAoWLWBMboTG93
+41,1,Balanced,English,Sometimes,3,True,Pocatello,Antoinette Smith,2,Undergraduate,100-150k,,Female,ID,2,Fp8Ao7x9N2cAh8elLXn5DtVNZ853
+38,5,Balanced,Accounting,Always,5,True,Pocatello,Candida,4,Some College,,,Female,ID,3,GYMP6aeoVoNsgb3HHoJa1BsqvBz1
+57,4,Balanced,,Rarely,2,True,Idaho Falls,Shelly Marquiss,1,High School,50-75k,Democrat,Female,ID,1,HJ9qebsx2PhOmMgZfh4drZ364Bs2
+38,,,,,,True,Nampa,Jessie Sanchez,,Graduate,,,Prefer not to say,ID,,HMN6ojKwiUckwcoWJWENrxnW1YI3
+48,4,Balanced,Management ,Sometimes,3,True,Pocatello,Jamie Simmons,3,Undergraduate,,,Female,ID,2,Ifswdwys5mOVp8LL9bQMRJ884WG2
+43,,,,,,True,Idaho falls ,Jackie Ramirez,,Some College,,,Female,ID,,K55k7Zv4M7hg8MT7QPSXcvvpQ4o2
+31,3,Analytical,,Sometimes,3,True,Idaho Falls,Maria Smith,2,High School,50-75k,Republican,Female,ID,2,NcYFV3gDhsX74CSOSfMfbQ42iQg2
+39,2,Creative,English,Sometimes,3,True,Idaho Falls,Kirby Lord,2,Undergraduate,25-50k,Independent,Male,ID,1,QwUKE0cjNSWEIujShMoKxdal8Qj1
+40,3,Balanced,Psychology,Sometimes,4,True,Downey,Melissa Bowman,4,Undergraduate,50-75k,Independent,Female,ID,1,Rhd2eIKuIhMQDrWqHC9XMunKOWt2
+32,4,Balanced,,Rarely,2,True,Hagerman,Brooke Johnson,1,High School,100-150k,Independent,Female,ID,1,SloX0xHeZecROhzFItLyzWmP9tI3
+32,4,Balanced,Business,,,True,Meridian,Karissa,2,Undergraduate,,,Female,ID,1,U53dZD24iwY9CtNl394Db3aBYaF3
+34,3,Balanced,Match teacher,Sometimes,4,True,Pocatello ,Elena,3,Graduate,<25k,,Female,ID,2,UT9l9FhwY4TvQD2jcmtPLLSwPDY2
+40,4,Analytical,,Rarely,4,True,Meridian,Aaron ,2,Undergraduate,100-150k,Independent,Male,ID,2,VUcID5IZGOPdUUMDJmKafr4Ow9d2
+31,4,Balanced,Executive,Often,4,True,Pocatello,Justin,4,Graduate,100-150k,Other,Male,ID,4,VZEIdm3syyVtXmoFuDgdQsrPt232
+56,,,,,,True,Kuna,Shannon,,,,,Female,ID,,ZKcQIuVFikX0PcpRlJaqC6Ob3Dv1
+46,3,Balanced,Communications,Often,3,True,Pocatello,Trent Campbell,4,Undergraduate,75-100k,Republican,Male,ID,3,ZcjkWqC2kXdCWqrLsAnUT8KUvmH3
+59,4,Creative,,,3,True,Basalt,Rhonda Ellsworth,3,High School,,Republican,Female,ID,2,a5kfMHcUa9VRCJqDXMiv2c6vs4K2
+33,4,Analytical,Driver,Sometimes,4,True,Pocatello ,Michael ,3,Graduate,100-150k,Independent,Male,ID,3,aLNrF0GLN8a5kJ7TS5uIkEevEWg1
+100,,,,Never,,True,Pocatello,Jo Strait,,Undergraduate,,,Female,ID,1,adAl84zHGuZcmWvVA1DHc9TsOWT2
+35,5,Creative,Medical,Sometimes,3,True,Idaho Falls,Laura Meza,3,Some College,50-75k,Republican,Female,ID,1,adp7yaYVyXhsfdPEixzwpx1DCPl1
+43,5,Balanced,,Never,3,True,Boise,Jade,3,Some College,>150k,Independent,Female,ID,1,bUoL8kHKfTSZfSHhVg91YsnHCS42
+17,4,Creative,,Sometimes,3,True,Pocatello,Jordan Carr,5,High School,<25k,Republican,Male,ID,2,dnCU9DpqXqdgavh7euSoCewo9UO2
+47,4,Analytical,Finance,Always,5,True,Pocatello ,Mindy,5,High School,100-150k,Other,Female,ID,1,eiq4PSxZvycexdGgQgWJuwvRvQP2
+35,,,"Pyscholgy, cyber security",,,True,Pocatello,Tracey,,Undergraduate,,Other,Female,ID,,gWfYIa5GhLVRjwCYKtXgwznSOhu2
+31,,,,,,True,Nampa,Anali,,,,,Female,ID,,hK2hjNg8ICM37BVQ9oXebmC7r3Z2
+21,,,,,,True,Pocatello ,Faith,,High School,,,Female,ID,,k1RyRIWY5zMqviUwtW21UG3MpUA2
+19,,,,,,True,Twin falls,Kylee Swensen,,,,,Female,ID,,kszQEdUE8OVNBTJSaiChtVlQr6K2
+51,5,Balanced,Sales,Sometimes,4,True,Chubbuck,Chad carr,3,Some College,>150k,Republican,Non-binary,ID,2,l1cnG7SvqCNgimDPp7AkTAeCrs33
+34,,,Finances ,,,True,Chubbuck,Savannah McElhinney ,,Undergraduate,,,Female,ID,,lCg6UI80j5MpdHO6np9tbq1jNoB2
+26,5,Analytical,Engineer,Often,5,True,Logan,Camren Todd,3,Graduate,25-50k,Republican,Male,UT,3,lYil8RfYA8V2VQ1028FQLN6kISj2
+24,3,Balanced,,Rarely,3,True,Meridian,Makayla Jansen,2,High School,50-75k,,Female,ID,1,mRIV0xktnJOgtoWbwW51keS1St52
+39,,Balanced,,Never,,True,Kimberly,Liz Freeman,,High School,75-100k,,Female,ID,,n3P408xLYVel2M9tVLkoThQ9ELP2
+18,4,Balanced,,Rarely,3,True,Chubbuck,Esmeralda Altamirano,3,High School,<25k,Other,Female,ID,1,nE7KuFeeMnhVDG0TKCfXVmyfIm23
+25,4,Creative,Accounting and Bookkeeping,Sometimes,4,True,Boise,Feather,4,Some College,25-50k,Independent,Female,ID,1,nHSsvfViZnRqloIwPfOsszs1kTo1
+23,5,Balanced,Business Management ,Often,4,True,Pocatello,James Sampson,4,Some College,,Independent,Male,ID,3,oM6O0M3JzidZ8V4HE69zQx4ZpZs1
+23,,,Accounting,,,True,Pocatello,Izaiah,,High School,25-50k,,Male,ID,,qvOxYgKRV8Tez8rlvoRKJeL1vrf1
+34,4,Analytical,,Sometimes,3,True,Idaho falls,MISAEL CISNEROS,2,Some College,75-100k,Independent,Male,ID,1,tWbs6WsaNDVpLeE3AzTAHz4mGP63
+26,,,,,,True,Boise,Yesenia Bernabe,,High School,,,Female,ID,,wFE85IPr0SSZV0avw14kQAbxW4K2
+43,4,Balanced,Finance,Often,3,True,Idaho Falls ,GinGar Lancaster ,4,Undergraduate,>150k,Independent,Female,ID,1,wGNiS4anDeadyMz0wNqCaWNnRAz2
+31,4,Balanced,,Always,4,True,Heyburn,Andee ,2,Some College,75-100k,Republican,Female,ID,1,waJwD6cPBnXbfPTMhUlKTSsBci32
+35,,,,,,True,Middleton ,Nicole ,,Some College,,,Female,ID,,zXW1uoXHSnO07yftSaqeHRpD4BD2
