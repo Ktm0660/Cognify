@@ -46,3 +46,150 @@ input, select {
     padding: 15px;
     /* Remove margin-top if it exists */
 }
+
+.avatar-selector {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin: 20px 0;
+  }
+  
+  .avatar-btn {
+    font-size: 4rem;
+    padding: 10px;
+    border: 2px solid transparent;
+    background-color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease, border 0.2s ease;
+  }
+  
+  .avatar-btn:hover {
+    transform: scale(1.1);
+  }
+  
+  .avatar-btn.selected {
+    border: 4px solid #007bff;
+    background-color: #e6f2ff;
+  }
+  
+  .round-selector {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 20px 0;
+  }
+  
+  .round-btn {
+    font-size: 3rem;
+    padding: 10px 15px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: darkgrey;
+    transition: background-color 0.2s ease, border 0.2s ease;
+  }
+  
+  .round-btn:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .round-btn.selected {
+    border: 2px solid #007bff;
+    background-color: blue;
+  }
+
+  .icecream-config {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    text-align: center;
+  }
+  
+  .intro,
+  .round-label {
+    font-size: 1.5rem;
+    margin: 20px 0 10px;
+    color: #222;
+    font-weight: bold;
+    font-weight: italic;
+  }
+  
+  .start-button {
+    margin-top: 30px;
+    padding: 12px 24px;
+    font-size: 2rem;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .start-button:hover {
+    background-color: #218838;
+  }
+    
+  .price-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .price-buttons button {
+    font-size: 1.2rem;
+    padding: 10px 25px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .price-buttons button:hover {
+    transform: scale(1.05);
+  }
+
+  .result-display {
+    margin-top: 30px;
+    background-color: #f8fbff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+    text-align: center;
+    max-width: 600px;
+    margin-inline: auto;
+  }
+  
+  .choice-row p,
+  .earnings p,
+  .totals p {
+    font-size: 1.1rem;
+    margin: 8px 0;
+  }
+  
+  .price {
+    font-weight: bold;
+    color: #007bff;
+  }
+  
+  .next-button {
+    margin-top: 20px;
+    font-size: 1.1rem;
+    padding: 10px 24px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .next-button:hover {
+    background-color: #218838;
+  }
+  

@@ -1,6 +1,6 @@
 /* Home container setup */
 .home-container {
-    padding: 100px 30px 50px;
+    padding: 10px 30px 50px;
     background: linear-gradient(to bottom right, #f0f8ff, #e3efff);
     min-height: 100vh;
     font-family: "Segoe UI", sans-serif;
@@ -127,3 +127,8 @@
     border-left-color: #673ab7;
   }
     
+  .game-icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+  
