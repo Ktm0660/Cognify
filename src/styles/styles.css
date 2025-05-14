@@ -192,4 +192,50 @@ input, select {
   .next-button:hover {
     background-color: #218838;
   }
+
+  .instructions-box {
+    background: #fff8e1;
+    border-left: 6px solid #ff9800;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px auto;
+    max-width: 600px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    text-align: left;
+  }
+  
+  .instructions-box h2 {
+    color: #ff9800;
+    margin-bottom: 10px;
+  }
+  
+  .instructions-box ul {
+    padding-left: 1.2rem;
+  }
+  
+  .instructions-box li {
+    margin-bottom: 10px;
+    font-size: 1rem;
+  }
+  
+  .good {
+    color: green;
+    font-weight: bold;
+  }
+  
+  .great {
+    color: #009688;
+    font-weight: bold;
+  }
+  
+  .bad {
+    color: red;
+    font-weight: bold;
+  }
+  
+  .meh {
+    color: #666;
+    font-weight: bold;
+  }
+  
   
