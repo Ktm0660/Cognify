@@ -41,7 +41,11 @@ export default function Header() {
   return (
     <nav className="header">
       <div className="header-top">
-        <h1 className="logo">Game Theory Central</h1>
+        <h1 className="logo">
+          <NavLink to="/" className="logo-link">
+            Game Theory Central
+          </NavLink>
+        </h1>
         {isMobile && (
           <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
             ☰
