@@ -267,5 +267,40 @@ input, select {
     padding: 20px 10px;
   }
 }
+=======
+  /* Results page */
+  .icecream-results {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+  }
+
+  .results-box {
+    background: #e0f7fa;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .results-box p {
+    font-size: 1.2rem;
+    margin: 10px 0;
+  }
+
+  .results-button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .results-button:hover {
+    background-color: #0056b3;
+  }
   
   
