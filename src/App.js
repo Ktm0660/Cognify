@@ -14,6 +14,7 @@ import Header from "./components/header";
 import "./styles/styles.css";
 import IceCreamConfig from "./pages/IceCreamConfig"; // adjust if your file is elsewhere
 import IceCreamPlay from "./pages/IceCreamPlay";
+import IceCreamResults from "./pages/IceCreamResults";
 
 
 
@@ -66,6 +67,11 @@ function App() {
 <Route
   path="/icecreamplay"
   element={user && hasInfo ? <IceCreamPlay /> : <Navigate to={user ? "/info" : "/login"} />}
+/>
+
+<Route
+  path="/icecreamresults"
+  element={user && hasInfo ? <IceCreamResults /> : <Navigate to={user ? "/info" : "/login"} />}
 />
 
 </Routes>
