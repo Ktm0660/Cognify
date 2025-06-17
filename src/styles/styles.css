@@ -238,6 +238,36 @@ input, select {
     font-weight: bold;
   }
 
+@media (max-width: 480px) {
+  .avatar-selector {
+    gap: 10px;
+  }
+
+  .avatar-btn {
+    font-size: 3rem;
+    padding: 8px;
+  }
+
+  .round-btn {
+    font-size: 1.8rem;
+    padding: 8px 12px;
+  }
+
+  .intro,
+  .round-label {
+    font-size: 1.2rem;
+  }
+
+  .start-button {
+    font-size: 1.5rem;
+    padding: 10px 20px;
+  }
+
+  .icecream-config {
+    padding: 20px 10px;
+  }
+}
+=======
   /* Results page */
   .icecream-results {
     display: flex;
