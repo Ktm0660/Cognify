@@ -1,9 +1,10 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 
 
 export default function IceCreamPlay() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [currentRound, setCurrentRound] = useState(1);
   const [playerChoice, setPlayerChoice] = useState(null);
   const [aiChoice, setAiChoice] = useState(null);
@@ -77,7 +78,13 @@ export default function IceCreamPlay() {
       setAiChoice(null);
       setShowResult(false);
     } else {
-      alert(`Game Over!\nFinal Score:\nYou: $${playerTotal}\nAI: $${aiTotal}`);
+      navigate('/icecreamresults', {
+        state: {
+          playerTotal,
+          aiTotal,
+          rounds,
+        },
+      });
       setPlayerHistory([]);
     }
   }
