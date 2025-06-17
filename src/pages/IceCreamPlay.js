@@ -16,7 +16,8 @@ export default function IceCreamPlay() {
 
 
   function handlePlayerChoice(choice) {
-    const newHistory = [...playerHistory, choice];
+    const prevHistory = playerHistory;
+    const newHistory = [...prevHistory, choice];
     let ai;
   
     // 💡 EASY: Random guess
@@ -33,7 +34,8 @@ export default function IceCreamPlay() {
   
     // 💡 HARD: If player cooperates (5) consistently, AI does too. Else defect.
     } else if (difficulty === "Hard") {
-      const recent = newHistory.slice(-3);
+      // use only the player's previous behaviour to decide
+      const recent = prevHistory.slice(-3);
       const coopRate = recent.filter((c) => c === 5).length / Math.max(recent.length, 1);
       ai = coopRate >= 0.66 ? 5 : 3; // if they cooperated at least 2 out of 3, reward
     } else {
