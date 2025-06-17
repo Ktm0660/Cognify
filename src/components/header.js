@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import "../styles/header.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { auth } from "../firebase"; // make sure this is correctly imported
 import { onAuthStateChanged, signOut } from "firebase/auth";
 
@@ -8,6 +8,7 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [user, setUser] = useState(null);
+  const navRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,6 +30,17 @@ export default function Header() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handleOutsideClick = (e) => {
+      if (navRef.current && !navRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("click", handleOutsideClick);
+    return () => document.removeEventListener("click", handleOutsideClick);
+  }, [menuOpen]);
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -39,7 +51,7 @@ export default function Header() {
   };
 
   return (
-    <nav className="header">
+    <nav className="header" ref={navRef}>
       <div className="header-top">
         <h1 className="logo">
           <NavLink to="/" className="logo-link">
