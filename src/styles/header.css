@@ -21,6 +21,12 @@
     font-weight: bold;
 }
 
+/* Make the logo clickable without default link styling */
+.logo-link {
+    text-decoration: none;
+    color: inherit;
+}
+
 /* Navigation links */
 .nav-links {
     list-style: none;
