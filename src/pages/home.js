@@ -110,9 +110,27 @@ export default function Home() {
       {/* Challenge the Computer */}
       <div className="section vs-computer">
         <h2>🤖 Multiplayer Games</h2>
+        {games
+          .filter((g) => g.id === "Booty" && g.status === "live")
+          .map((game) => (
+            <motion.div
+              key={game.id}
+              className="game-card stacked"
+              onClick={() => navigate(game.route)}
+              style={{ borderLeft: `6px solid ${game.color}` }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.1, ease: "easeOut" }}
+            >
+              <h3>{game.title}</h3>
+              <p>{game.description}</p>
+              </motion.div>
+          ))}
         <div className="game-grid">
           {games
-            .filter((g) => g.category === "vs-computer" && g.status === "live")
+            .filter((g) => g.category === "vs-computer" && g.status === "live" && g.id !== "Booty")
             .map((game) => (
               <motion.div
                 key={game.id}
