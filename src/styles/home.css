@@ -136,4 +136,4 @@
   .game-card.stacked {
     margin: 0 10px 30px;
   }
-  
+  .points-total { font-size: 1rem; margin-top: 5px; color: #333; }

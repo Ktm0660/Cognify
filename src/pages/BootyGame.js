@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { auth } from "../firebase";
+import { awardPoints } from "../utils/points";
 
 export default function BootyGame() {
   const chestValue = 100;
@@ -22,6 +24,7 @@ export default function BootyGame() {
   const [playerTotal, setPlayerTotal] = useState(0);
   const [aiTotal, setAiTotal] = useState(0);
   const [history, setHistory] = useState([]);
+  const [sessionPoints, setSessionPoints] = useState(0);
 
   // generate AI offer when it's AI's turn to split
   useEffect(() => {
@@ -118,6 +121,26 @@ export default function BootyGame() {
   const avgOffer = history.filter((h) => h.splitter === "player").reduce((sum, h) => sum + h.offer, 0) / Math.max(history.filter((h) => h.splitter === "player").length, 1);
   const rejectedPositive = history.filter((h) => h.splitter === "ai" && !h.accepted && (chestValue - h.offer) > 0).length;
 
+  useEffect(() => {
+    if (gameOver) {
+      const pts = history.reduce((sum, h) => {
+        if (h.splitter === "player" && h.accepted) {
+          let base = 50;
+          if (h.round === 1) base = 100;
+          if (h.offer >= 40 && h.offer <= 60) base = Math.max(base, 75);
+          if (h.offer < 50) base += 20;
+          return sum + base;
+        }
+        return sum;
+      }, 0);
+      setSessionPoints(pts);
+      const user = auth.currentUser;
+      if (user) {
+        awardPoints(user.uid, "bootyGame", pts, "scenario_001");
+      }
+    }
+  }, [gameOver, history]);
+
   if (gameOver) {
     return (
       <div className="booty-game">
@@ -128,6 +151,7 @@ export default function BootyGame() {
         <p>AI collected {aiTotal} gold.</p>
         <p>Your average offer as splitter was {Math.round(avgOffer)} coins.</p>
         <p>You rejected {rejectedPositive} profitable offers.</p>
+        <p>Points Earned: {sessionPoints}</p>
         <button onClick={() => window.location.reload()}>Play Again</button>
       </div>
     );

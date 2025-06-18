@@ -53,3 +53,8 @@
     width: 100%;
 }
 
+
+.points-earned {
+    font-weight: bold;
+    margin-top: 10px;
+}
