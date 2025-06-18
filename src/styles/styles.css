@@ -316,3 +316,26 @@ input, select {
   }
   
   
+/* Split the Booty game styles */
+.booty-game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.proposal-box,
+.result-box {
+  background: #fff8e1;
+  border-left: 6px solid #ff9800;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.proposal-box input[type="range"] {
+  width: 80%;
+  margin: 20px 0;
+}

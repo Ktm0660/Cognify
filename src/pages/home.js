@@ -31,6 +31,16 @@ export default function Home() {
       color: "#ff9800"
     },
     {
+      id: "Booty",
+      title: "Split the Booty",
+      description: "Divide the loot fairly or risk getting nothing.",
+      route: "/bootygame",
+      status: "live",
+      category: "vs-computer",
+      emoji: "🏴\u200d☠️",
+      color: "#795548"
+    },
+    {
       id: "logic101",
       title: "Intro to Logical Fallacies",
       description: "Learn how flawed arguments are formed and detected.",
