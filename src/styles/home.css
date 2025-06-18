@@ -131,4 +131,9 @@
     font-size: 2rem;
     margin-bottom: 10px;
   }
+
+  /* Stacked card below section header */
+  .game-card.stacked {
+    margin: 0 10px 30px;
+  }
   
