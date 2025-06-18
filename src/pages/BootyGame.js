@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from "react";
 
 export default function BootyGame() {
-  const totalRounds = 6; // fixed number of rounds
   const chestValue = 100;
+
+  // ----- Setup states -----
+  const [showSetup, setShowSetup] = useState(true);
+  const [showInstructions, setShowInstructions] = useState(false);
+  const [pirateName, setPirateName] = useState("");
+  const [pirateColor, setPirateColor] = useState("#ff9800");
+  const [totalRounds, setTotalRounds] = useState(6);
+  const [difficulty, setDifficulty] = useState("Easy");
 
   const [currentRound, setCurrentRound] = useState(1);
   const [splitter, setSplitter] = useState(Math.random() < 0.5 ? "player" : "ai");
@@ -19,13 +26,59 @@ export default function BootyGame() {
   // generate AI offer when it's AI's turn to split
   useEffect(() => {
     if (splitter === "ai" && !decisionMade) {
-      const offer = Math.floor(Math.random() * 61) + 20; // AI keeps 20-80
-      setAiOffer(offer);
+      let offer;
+      if (difficulty === "Easy") {
+        offer = Math.floor(Math.random() * 101); // completely random
+      } else if (difficulty === "Medium") {
+        const r = Math.random();
+        if (r < 0.6) {
+          offer = Math.floor(Math.random() * 21) + 40; // 40-60
+        } else if (r < 0.9) {
+          offer = Math.floor(Math.random() * 31) + 60; // 60-90
+        } else {
+          offer = Math.floor(Math.random() * 30) + 10; // 10-40
+        }
+      } else {
+        // Hard: adapt to player's generosity
+        const playerSplits = history.filter((h) => h.splitter === "player");
+        const avgShare =
+          playerSplits.reduce((s, h) => s + h.offer, 0) /
+          Math.max(playerSplits.length, 1);
+        const base = 70;
+        offer = base - (50 - avgShare);
+        if (offer < 20) offer = 20;
+        if (offer > 80) offer = 80;
+      }
+      setAiOffer(Math.round(offer));
     }
-  }, [splitter, decisionMade, currentRound]);
+  }, [splitter, decisionMade, currentRound, difficulty, history]);
 
   const handleSubmitProposal = () => {
-    const accept = playerShare <= 70; // AI accepts if it gets at least 30
+    let accept;
+    if (difficulty === "Easy") {
+      accept = playerShare <= 80 || Math.random() < 0.2;
+    } else if (difficulty === "Medium") {
+      if (playerShare <= 60) accept = true;
+      else if (playerShare <= 80) accept = Math.random() < 0.3;
+      else if (playerShare <= 90) accept = Math.random() < 0.1;
+      else accept = false;
+    } else {
+      const aiOffers = history.filter((h) => h.splitter === "ai");
+      const acceptedCnt = aiOffers.filter((h) => h.accepted).length;
+      const acceptanceRate = aiOffers.length
+        ? acceptedCnt / aiOffers.length
+        : 1;
+      if (acceptanceRate > 0.9) {
+        accept = true;
+      } else {
+        const playerSplits = history.filter((h) => h.splitter === "player");
+        const avgShare =
+          playerSplits.reduce((s, h) => s + h.offer, 0) /
+          Math.max(playerSplits.length, 1);
+        const threshold = Math.min(Math.max(avgShare, 50), 80);
+        accept = playerShare <= threshold;
+      }
+    }
     setDecisionMade(true);
     setAccepted(accept);
     if (accept) {
@@ -69,11 +122,95 @@ export default function BootyGame() {
     return (
       <div className="booty-game">
         <h2>🏴‍☠️ Game Over</h2>
-        <p>You collected {playerTotal} gold.</p>
+        <p style={{ color: pirateColor }}>
+          {pirateName || "You"} collected {playerTotal} gold.
+        </p>
         <p>AI collected {aiTotal} gold.</p>
         <p>Your average offer as splitter was {Math.round(avgOffer)} coins.</p>
         <p>You rejected {rejectedPositive} profitable offers.</p>
         <button onClick={() => window.location.reload()}>Play Again</button>
+      </div>
+    );
+  }
+
+  if (showSetup) {
+    const roundOptions = [3, 5, 7, 10];
+    const difficulties = ["Easy", "Medium", "Hard"];
+    return (
+      <div className="booty-config">
+        <h2>🏴‍☠️ Choose Yer Details</h2>
+        <input
+          type="text"
+          placeholder="Pirate name"
+          value={pirateName}
+          onChange={(e) => setPirateName(e.target.value)}
+        />
+        <p className="round-label">Pick yer flag color</p>
+        <input
+          type="color"
+          value={pirateColor}
+          onChange={(e) => setPirateColor(e.target.value)}
+        />
+        <p className="round-label">How many rounds?</p>
+        <div className="round-selector">
+          {roundOptions.map((r) => (
+            <button
+              key={r}
+              className={`round-btn ${totalRounds === r ? "selected" : ""}`}
+              onClick={() => setTotalRounds(r)}
+            >
+              {r}
+            </button>
+          ))}
+        </div>
+        <p className="round-label">Difficulty</p>
+        <div className="round-selector">
+          {difficulties.map((d) => (
+            <button
+              key={d}
+              className={`round-btn ${difficulty === d ? "selected" : ""}`}
+              onClick={() => setDifficulty(d)}
+            >
+              {d}
+            </button>
+          ))}
+        </div>
+        <button
+          className="start-button"
+          onClick={() => {
+            setShowSetup(false);
+            setShowInstructions(true);
+            setCurrentRound(1);
+            setSplitter(Math.random() < 0.5 ? "player" : "ai");
+          }}
+        >
+          ☠️ Set Sail
+        </button>
+      </div>
+    );
+  }
+
+  if (showInstructions) {
+    return (
+      <div className="booty-game">
+        <div className="instructions-box">
+          <h2>How to Play</h2>
+          <p>
+            Each round a chest of 100 gold coins appears. Whoever is the
+            splitter proposes how to divide the booty. The other pirate may
+            accept or reject the offer. If an offer is rejected, nobody gets any
+            gold.
+          </p>
+          <p>
+            Your goal is to leave with as much treasure as possible after {totalRounds}
+            {" "}
+            rounds. Sometimes fairness wins, sometimes greed does – choose
+            wisely!
+          </p>
+          <button className="start-button" onClick={() => setShowInstructions(false)}>
+            Begin!
+          </button>
+        </div>
       </div>
     );
   }
@@ -83,7 +220,9 @@ export default function BootyGame() {
       <h2>Round {currentRound} of {totalRounds}</h2>
       {!decisionMade && splitter === "player" && (
         <div className="proposal-box">
-          <p>You are the splitter. Choose your share:</p>
+          <p style={{ color: pirateColor }}>
+            {pirateName || "You"} are the splitter. Choose your share:
+          </p>
           <input type="range" min="0" max="100" value={playerShare} onChange={(e) => setPlayerShare(Number(e.target.value))} />
           <p>You keep {playerShare} coins, AI gets {chestValue - playerShare} coins.</p>
           <button onClick={handleSubmitProposal}>Propose Split</button>
@@ -101,7 +240,7 @@ export default function BootyGame() {
       {decisionMade && (
         <div className="result-box">
           {accepted ? <p>Offer accepted!</p> : <p>Offer rejected! No one gets coins.</p>}
-          <p>Your total: {playerTotal}</p>
+          <p style={{ color: pirateColor }}>{pirateName || "You"} total: {playerTotal}</p>
           <p>AI total: {aiTotal}</p>
           <button onClick={handleNextRound}>{currentRound < totalRounds ? "Next Round" : "See Results"}</button>
         </div>
