@@ -3,7 +3,6 @@ import "../styles/game.css";
 import stringSimilarity from "string-similarity";
 import { auth, db } from "../firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { awardPoints } from "../utils/points";
 
 export default function Game() {
     const [showInstructions, setShowInstructions] = useState(true);
@@ -20,7 +19,6 @@ export default function Game() {
     const [answers, setAnswers] = useState([]);
     const [startTime, setStartTime] = useState(null);
     const [gameOver, setGameOver] = useState(false);
-    const [pointsAwarded, setPointsAwarded] = useState(null);
     const [alreadyPlayed, setAlreadyPlayed] = useState(false); // Track if the user has already played
     const [errorMessage, setErrorMessage] = useState(""); // Track error messages
     const guessCountRef = useRef(0);
@@ -170,16 +168,6 @@ export default function Game() {
                     correctList: correctList,
                     incorrectList: incorrectList,
                 }, { merge: true });
-
-                // 🎮 Award points
-                let base = 25;
-                if (guessCountRef.current === 0) base = 100;
-                else if (guessCountRef.current === 1) base = 75;
-                else if (guessCountRef.current === 2) base = 50;
-                const bonus = guessCountRef.current >= 5 ? 10 : 0;
-                const earned = base + bonus;
-                await awardPoints(user.uid, "patternGame", earned, "pattern_001");
-                setPointsAwarded(earned);
             }
         } else {
             setGuessResult("❌ Incorrect! Try again.");
@@ -257,9 +245,6 @@ export default function Game() {
                     />
                     <button onClick={checkFinalGuess} disabled={gameOver}>Submit Guess</button>
                     {guessResult && <p className="guess-result">{guessResult}</p>}
-                    {pointsAwarded !== null && (
-                        <p className="points-earned">Points Earned: {pointsAwarded}</p>
-                    )}
                 </div>
             )}
         </div>

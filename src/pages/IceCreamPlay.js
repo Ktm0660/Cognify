@@ -85,7 +85,6 @@ export default function IceCreamPlay() {
           playerTotal,
           aiTotal,
           rounds,
-          difficulty,
         },
       });
       setPlayerHistory([]);

@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { auth } from "../firebase";
-import { getTotalPoints } from "../utils/points";
 import "../styles/home.css";
 import { motion } from "framer-motion";
 
@@ -9,7 +8,6 @@ import { motion } from "framer-motion";
 export default function Home() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [totalPoints, setTotalPoints] = useState(0);
 
   const games = [
     {
@@ -70,27 +68,14 @@ export default function Home() {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    const fetchPoints = async () => {
-      if (user) {
-        const pts = await getTotalPoints(user.uid);
-        setTotalPoints(pts);
-      }
-    };
-    fetchPoints();
-  }, [user]);
-
   return (
     <div className="home-container">
       <div className="home-header">
         <h1>🧠 Critical Thinking Hub</h1>
         {user && (
-          <>
-            <p className="welcome">
-              Welcome, {user.displayName || "Thinker"}!
-            </p>
-            <p className="points-total">Total Points: {totalPoints}</p>
-          </>
+          <p className="welcome">
+            Welcome, {user.displayName || "Thinker"}!
+          </p>
         )}
         <p className="subtext">
           Choose a section below to play games, sharpen your mind, and explore data.
