@@ -98,7 +98,7 @@ export default function Home() {
       </div>
 
       {/* Single Player Games */}
-      < div className="section solo">
+      <div id="single-player" className="section solo">
         <h2>🧩 Single Player Games</h2>
         <div className="game-grid">
           {games
@@ -123,7 +123,7 @@ export default function Home() {
       </div>
 
       {/* Challenge the Computer */}
-      <div className="section vs-computer">
+      <div id="multiplayer" className="section vs-computer">
         <h2>🤖 Multiplayer Games</h2>
         {games
           .filter((g) => g.id === "Booty" && g.status === "live")
@@ -166,7 +166,7 @@ export default function Home() {
       </div>
 
       {/* Learn & Train */}
-      <div className="section education">
+      <div id="education" className="section education">
         <h2>📚 Learn and Develop Critical Thinking Skills</h2>
         <div className="game-grid">
           {games
@@ -191,7 +191,7 @@ export default function Home() {
       </div>
 
       {/* Thinking Insights */}
-      <div className="section data">
+      <div id="insights" className="section data">
         <h2>📊 Insights</h2>
         <div className="game-grid">
           {games

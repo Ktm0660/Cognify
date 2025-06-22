@@ -6,7 +6,6 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [user, setUser] = useState(null);
   const navRef = useRef(null);
   const navigate = useNavigate();
@@ -19,16 +18,6 @@ export default function Header() {
     return () => unsubscribe(); // cleanup listener on unmount
   }, []);
 
-  useEffect(() => {
-    const handleResize = () => {
-      const mobile = window.innerWidth < 768;
-      setIsMobile(mobile);
-      if (!mobile) setMenuOpen(false); // auto-close menu on resize to desktop
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -58,23 +47,36 @@ export default function Header() {
             Game Theory Central
           </NavLink>
         </h1>
-        {isMobile && (
-          <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
-            ☰
-          </button>
-        )}
+        <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
+          ☰
+        </button>
       </div>
 
-      {(!isMobile || menuOpen) && (
-        <ul className="nav-links">
+      {menuOpen && (
+        <ul className="nav-links open">
           <li>
             <NavLink to="/" className={({ isActive }) => isActive ? "active-link" : ""}>
               Home
             </NavLink>
           </li>
           <li>
-            <NavLink to="/game" className={({ isActive }) => isActive ? "active-link" : ""}>
-              Pattern Guessing Game
+            <NavLink to="/#single-player" className={({ isActive }) => isActive ? "active-link" : ""}>
+              Single Player
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/#multiplayer" className={({ isActive }) => isActive ? "active-link" : ""}>
+              Multiplayer
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/#education" className={({ isActive }) => isActive ? "active-link" : ""}>
+              Education
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/#insights" className={({ isActive }) => isActive ? "active-link" : ""}>
+              Insights
             </NavLink>
           </li>
 
