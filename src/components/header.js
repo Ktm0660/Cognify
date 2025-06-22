@@ -24,16 +24,23 @@ export default function Header() {
     const handleOutsideClick = (e) => {
       if (navRef.current && !navRef.current.contains(e.target)) {
         setMenuOpen(false);
+        setOpenSection(null);
       }
     };
-    document.addEventListener("click", handleOutsideClick);
-    return () => document.removeEventListener("click", handleOutsideClick);
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("touchstart", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("touchstart", handleOutsideClick);
+    };
   }, [menuOpen]);
 
   const handleLogout = async () => {
     try {
       await signOut(auth);
       navigate("/"); // redirect to home or login screen
+      setMenuOpen(false);
+      setOpenSection(null);
     } catch (error) {
       console.error("Logout error:", error.message);
     }
@@ -55,34 +62,27 @@ export default function Header() {
       {menuOpen && (
         <ul className="nav-links open">
           <li>
-            <NavLink to="/" className={({ isActive }) => isActive ? "active-link" : ""}>
+            <NavLink
+              to="/"
+              className={({ isActive }) => (isActive ? "active-link" : "")}
+              onClick={() => setMenuOpen(false)}
+            >
               Home
             </NavLink>
           </li>
-          <li>
-            <NavLink to="/#single-player" className={({ isActive }) => isActive ? "active-link" : ""}>
-              Single Player
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/#multiplayer" className={({ isActive }) => isActive ? "active-link" : ""}>
-              Multiplayer
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/#education" className={({ isActive }) => isActive ? "active-link" : ""}>
-              Education
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/#insights" className={({ isActive }) => isActive ? "active-link" : ""}>
-              Insights
-            </NavLink>
+
           </li>
 
           {!user ? (
             <li>
-              <NavLink to="/login" className={({ isActive }) => isActive ? "active-link" : ""}>
+              <NavLink
+                to="/login"
+                className={({ isActive }) => (isActive ? "active-link" : "")}
+                onClick={() => {
+                  setMenuOpen(false);
+                  setOpenSection(null);
+                }}
+              >
                 Login
               </NavLink>
             </li>
