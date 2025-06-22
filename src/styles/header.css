@@ -1,127 +1,148 @@
 /* Header styling */
 .header {
-    display: flex;
-    position: sticky;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
-    background-color: #007bff;
-    color: white;
-    font-size: 18px;
-    position: fixed;
-    width: 100%;
-    box-sizing: border-box;
-    top: 0;
-    height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background-color: #007bff;
+  color: white;
+  font-size: 18px;
+  position: fixed;
+  width: 100%;
+  box-sizing: border-box;
+  top: 0;
+  height: 60px;
+  z-index: 1000;
 }
 
 /* Logo styling */
 .logo {
-    font-size: 24px;
-    font-weight: bold;
+  font-size: 24px;
+  font-weight: bold;
 }
 
 /* Make the logo clickable without default link styling */
 .logo-link {
-    text-decoration: none;
-    color: inherit;
+  text-decoration: none;
+  color: inherit;
 }
 
 /* Navigation links */
 .nav-links {
-    list-style: none;
-    display: flex;
-    gap: 20px;
+  list-style: none;
+  display: flex;
+  gap: 20px;
 }
 
-
-
 .menu-toggle {
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 1.8rem;
-    cursor: pointer;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.8rem;
+  cursor: pointer;
 }
 
 .nav-links.open {
-    position: absolute;
-    top: 60px;
-    right: 30px;
-    background-color: #007bff;
-    flex-direction: column;
-    gap: 10px;
-    padding: 10px 20px;
-    border-radius: 4px;
+  position: absolute;
+  top: 60px;
+  right: 30px;
+  background-color: #007bff;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 20px;
+  border-radius: 4px;
+}
+
+.section-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.submenu {
+  list-style: none;
+  padding-left: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .nav-links a {
-    text-decoration: none;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 5px;
-    transition: background 0.3s ease;
+  text-decoration: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
 /* Active link styling */
 .active-link {
-    background-color: rgb(118, 185, 237);
-    color: #007bff;
-    font-weight: bold;
+  background-color: rgb(118, 185, 237);
+  color: #007bff;
+  font-weight: bold;
 }
 
 /* Hover effect */
 .nav-links a:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 @media (max-width: 768px) {
-    .header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 4px 15px;
-        height: auto;
-    }
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 4px 15px;
+    height: auto;
+  }
 
-    .logo {
-        font-size: 20px;
-        margin-bottom: 10px;
-    }
+  .logo {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
 
-    .nav-links {
-        flex-direction: column;
-        gap: 10px;
-        width: 100%;
-    }
+  .nav-links {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
 
-    .nav-links a {
-        display: block;
-        width: 100%;
-        padding: 10px;
-    }
-    
-    .header-top {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-    }
+  .nav-links a {
+    display: block;
+    width: 100%;
+    padding: 10px;
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
 }
 /* Button styled like a nav link */
 .nav-links .nav-button {
-    background: transparent;
-    border: none;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.3s ease;
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 .nav-links .nav-button:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 .nav-links li {
-    display: inline-flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }

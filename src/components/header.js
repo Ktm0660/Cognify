@@ -6,6 +6,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [openSection, setOpenSection] = useState(null);
   const [user, setUser] = useState(null);
   const navRef = useRef(null);
   const navigate = useNavigate();
@@ -18,12 +19,12 @@ export default function Header() {
     return () => unsubscribe(); // cleanup listener on unmount
   }, []);
 
-
   useEffect(() => {
     if (!menuOpen) return;
     const handleOutsideClick = (e) => {
       if (navRef.current && !navRef.current.contains(e.target)) {
         setMenuOpen(false);
+        setOpenSection(null);
       }
     };
     document.addEventListener("click", handleOutsideClick);
@@ -34,6 +35,8 @@ export default function Header() {
     try {
       await signOut(auth);
       navigate("/"); // redirect to home or login screen
+      setMenuOpen(false);
+      setOpenSection(null);
     } catch (error) {
       console.error("Logout error:", error.message);
     }
@@ -55,34 +58,114 @@ export default function Header() {
       {menuOpen && (
         <ul className="nav-links open">
           <li>
-            <NavLink to="/" className={({ isActive }) => isActive ? "active-link" : ""}>
+            <NavLink
+              to="/"
+              className={({ isActive }) => (isActive ? "active-link" : "")}
+              onClick={() => setMenuOpen(false)}
+            >
               Home
             </NavLink>
           </li>
+
           <li>
-            <NavLink to="/#single-player" className={({ isActive }) => isActive ? "active-link" : ""}>
+            <button
+              className="section-btn"
+              onClick={() =>
+                setOpenSection(openSection === "solo" ? null : "solo")
+              }
+            >
               Single Player
-            </NavLink>
+            </button>
+            {openSection === "solo" && (
+              <ul className="submenu">
+                <li>
+                  <NavLink to="/game" onClick={() => setMenuOpen(false)}>
+                    Pattern Guessing Game
+                  </NavLink>
+                </li>
+              </ul>
+            )}
           </li>
+
           <li>
-            <NavLink to="/#multiplayer" className={({ isActive }) => isActive ? "active-link" : ""}>
+            <button
+              className="section-btn"
+              onClick={() => setOpenSection(openSection === "vs" ? null : "vs")}
+            >
               Multiplayer
-            </NavLink>
+            </button>
+            {openSection === "vs" && (
+              <ul className="submenu">
+                <li>
+                  <NavLink
+                    to="/icecreamgame"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Ice Cream Battle
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink to="/bootygame" onClick={() => setMenuOpen(false)}>
+                    Split the Booty
+                  </NavLink>
+                </li>
+              </ul>
+            )}
           </li>
+
           <li>
-            <NavLink to="/#education" className={({ isActive }) => isActive ? "active-link" : ""}>
+            <button
+              className="section-btn"
+              onClick={() =>
+                setOpenSection(openSection === "education" ? null : "education")
+              }
+            >
               Education
-            </NavLink>
+            </button>
+            {openSection === "education" && (
+              <ul className="submenu">
+                <li>
+                  <NavLink
+                    to="/learn/fallacies"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Intro to Logical Fallacies
+                  </NavLink>
+                </li>
+              </ul>
+            )}
           </li>
+
           <li>
-            <NavLink to="/#insights" className={({ isActive }) => isActive ? "active-link" : ""}>
+            <button
+              className="section-btn"
+              onClick={() =>
+                setOpenSection(openSection === "insights" ? null : "insights")
+              }
+            >
               Insights
-            </NavLink>
+            </button>
+            {openSection === "insights" && (
+              <ul className="submenu">
+                <li>
+                  <NavLink to="/analysis" onClick={() => setMenuOpen(false)}>
+                    Thinking Insights
+                  </NavLink>
+                </li>
+              </ul>
+            )}
           </li>
 
           {!user ? (
             <li>
-              <NavLink to="/login" className={({ isActive }) => isActive ? "active-link" : ""}>
+              <NavLink
+                to="/login"
+                className={({ isActive }) => (isActive ? "active-link" : "")}
+                onClick={() => {
+                  setMenuOpen(false);
+                  setOpenSection(null);
+                }}
+              >
                 Login
               </NavLink>
             </li>
