@@ -59,42 +59,37 @@ export default function Header() {
         </button>
       </div>
 
-      {menuOpen && (
-        <ul className="nav-links open">
-          <li>
-            <NavLink
-              to="/"
-              className={({ isActive }) => (isActive ? "active-link" : "")}
-              onClick={() => setMenuOpen(false)}
-            >
-              Home
-            </NavLink>
-          </li>
+   {menuOpen && (
+  <ul className="nav-links open">
+    <li>
+      <NavLink
+        to="/"
+        className={({ isActive }) => (isActive ? "active-link" : "")}
+        onClick={() => setMenuOpen(false)}
+      >
+        Home
+      </NavLink>
+    </li>
 
-          </li>
-
-          {!user ? (
-            <li>
-              <NavLink
-                to="/login"
-                className={({ isActive }) => (isActive ? "active-link" : "")}
-                onClick={() => {
-                  setMenuOpen(false);
-                  setOpenSection(null);
-                }}
-              >
-                Login
-              </NavLink>
-            </li>
-          ) : (
-            <li>
-              <button onClick={handleLogout} className="nav-button">
-                Logout
-              </button>
-            </li>
-          )}
-        </ul>
-      )}
-    </nav>
-  );
-}
+    {!user ? (
+      <li>
+        <NavLink
+          to="/login"
+          className={({ isActive }) => (isActive ? "active-link" : "")}
+          onClick={() => {
+            setMenuOpen(false);
+            setOpenSection(null);
+          }}
+        >
+          Login
+        </NavLink>
+      </li>
+    ) : (
+      <li>
+        <button onClick={handleLogout} className="nav-button">
+          Logout
+        </button>
+      </li>
+    )}
+  </ul>
+)}
