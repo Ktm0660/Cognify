@@ -46,50 +46,52 @@ export default function Header() {
     }
   };
 
-  return (
-    <nav className="header" ref={navRef}>
-      <div className="header-top">
-        <h1 className="logo">
-          <NavLink to="/" className="logo-link">
-            Game Theory Central
-          </NavLink>
-        </h1>
-        <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
-          ☰
-        </button>
-      </div>
-
-   {menuOpen && (
-  <ul className="nav-links open">
-    <li>
-      <NavLink
-        to="/"
-        className={({ isActive }) => (isActive ? "active-link" : "")}
-        onClick={() => setMenuOpen(false)}
-      >
-        Home
-      </NavLink>
-    </li>
-
-    {!user ? (
-      <li>
-        <NavLink
-          to="/login"
-          className={({ isActive }) => (isActive ? "active-link" : "")}
-          onClick={() => {
-            setMenuOpen(false);
-            setOpenSection(null);
-          }}
-        >
-          Login
+ return (
+  <nav className="header" ref={navRef}>
+    <div className="header-top">
+      <h1 className="logo">
+        <NavLink to="/" className="logo-link">
+          Game Theory Central
         </NavLink>
-      </li>
-    ) : (
-      <li>
-        <button onClick={handleLogout} className="nav-button">
-          Logout
-        </button>
-      </li>
+      </h1>
+      <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
+        ☰
+      </button>
+    </div>
+
+    {menuOpen && (
+      <ul className="nav-links open">
+        <li>
+          <NavLink
+            to="/"
+            className={({ isActive }) => (isActive ? "active-link" : "")}
+            onClick={() => setMenuOpen(false)}
+          >
+            Home
+          </NavLink>
+        </li>
+
+        {!user ? (
+          <li>
+            <NavLink
+              to="/login"
+              className={({ isActive }) => (isActive ? "active-link" : "")}
+              onClick={() => {
+                setMenuOpen(false);
+                setOpenSection(null);
+              }}
+            >
+              Login
+            </NavLink>
+          </li>
+        ) : (
+          <li>
+            <button onClick={handleLogout} className="nav-button">
+              Logout
+            </button>
+          </li>
+        )}
+      </ul>
     )}
-  </ul>
-)}
+  </nav>
+);
