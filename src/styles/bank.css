@@ -1,0 +1,10 @@
+.bank-game {
+  text-align: center;
+  padding: 20px;
+}
+.bank-controls button {
+  margin: 0 10px;
+}
+.scoreboard {
+  margin-top: 20px;
+}
