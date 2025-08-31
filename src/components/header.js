@@ -7,6 +7,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [openSection, setOpenSection] = useState(null);
   const navRef = useRef(null);
   const navigate = useNavigate();
 
@@ -54,7 +55,13 @@ export default function Header() {
             Game Theory Central
           </NavLink>
         </h1>
-        <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
+        <button
+          className="menu-toggle"
+          onClick={() => {
+            setMenuOpen(!menuOpen);
+            setOpenSection(null);
+          }}
+        >
           ☰
         </button>
       </div>
@@ -65,7 +72,10 @@ export default function Header() {
             <NavLink
               to="/"
               className={({ isActive }) => (isActive ? "active-link" : "")}
-              onClick={() => setMenuOpen(false)}
+              onClick={() => {
+                setMenuOpen(false);
+                setOpenSection(null);
+              }}
             >
               Home
             </NavLink>
