@@ -16,6 +16,7 @@ import IceCreamConfig from "./pages/IceCreamConfig"; // adjust if your file is e
 import IceCreamPlay from "./pages/IceCreamPlay";
 import IceCreamResults from "./pages/IceCreamResults";
 import BootyGame from "./pages/BootyGame";
+import BankGame from "./pages/BankGame";
 
 
 
@@ -78,6 +79,11 @@ function App() {
 <Route
   path="/bootygame"
   element={user && hasInfo ? <BootyGame /> : <Navigate to={user ? "/info" : "/login"} />}
+/>
+
+<Route
+  path="/bankgame"
+  element={user && hasInfo ? <BankGame /> : <Navigate to={user ? "/info" : "/login"} />}
 />
 
 </Routes>
