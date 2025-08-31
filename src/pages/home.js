@@ -41,6 +41,16 @@ export default function Home() {
       color: "#795548"
     },
     {
+      id: "bank",
+      title: "Bank",
+      description: "Roll dice and bank points before a 7 wipes the pot.",
+      route: "/bankgame",
+      status: "live",
+      category: "vs-computer",
+      emoji: "🏦",
+      color: "#2196f3"
+    },
+    {
       id: "logic101",
       title: "Intro to Logical Fallacies",
       description: "Learn how flawed arguments are formed and detected.",

@@ -1,0 +1,61 @@
+.bank-game {
+  text-align: center;
+  padding: 20px;
+}
+.bank-controls button {
+  margin: 0 10px;
+}
+.player-select {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+.player-card {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 5px;
+  cursor: pointer;
+}
+.player-card.selected {
+  background: #2196f3;
+  color: #fff;
+}
+.color-select {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+.color-option {
+  width: 24px;
+  height: 24px;
+  margin: 0 5px;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+.color-option.selected {
+  border-color: #000;
+}
+.instructions {
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: left;
+}
+.round-info,
+.leaderboard {
+  margin: 15px auto;
+  border-collapse: collapse;
+}
+.round-info th,
+.round-info td,
+.leaderboard th,
+.leaderboard td {
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+}
+.dice {
+  font-size: 24px;
+}
