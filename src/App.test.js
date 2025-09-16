@@ -6,7 +6,9 @@ jest.mock('react-router-dom');
 test('renders without crashing', async () => {
   render(<App />);
 
+  expect(screen.getByText(/loading/i)).toBeInTheDocument();
+
   await waitFor(() => {
-    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+    expect(screen.getByText(/login/i)).toBeInTheDocument();
   });
 });
