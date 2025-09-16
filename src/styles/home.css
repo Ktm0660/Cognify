@@ -94,6 +94,7 @@
       font-size: 0.85rem;
     }
   }
+
 /* SECTION COLOR THEMES */
 .section.solo h2 {
     color: #ff5e5e;
@@ -132,8 +133,17 @@
     margin-bottom: 10px;
   }
 
-  /* Stacked card below section header */
-  .game-card.stacked {
-    margin: 0 10px 30px;
+  .game-grid.vs-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 0 10px;
+    max-width: 720px;
+    margin: 0 auto;
   }
+
+  .game-grid.vs-grid .game-card {
+    width: 100%;
+  }
+
   
