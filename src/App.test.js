@@ -1,12 +1,12 @@
-import { render, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import App from './App';
 
 jest.mock('react-router-dom');
 
 test('renders without crashing', async () => {
-  const { container } = render(<App />);
+  render(<App />);
 
   await waitFor(() => {
-    expect(container.firstChild).toBeTruthy();
+    expect(screen.getByText(/loading/i)).toBeInTheDocument();
   });
 });

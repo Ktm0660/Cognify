@@ -449,7 +449,7 @@
 .score-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 640px;
+  min-width: 720px;
 }
 
 .score-table thead th {
@@ -493,6 +493,21 @@
   font-size: 0.85rem;
   color: #6b7a99;
   font-weight: 600;
+}
+
+.rolls-cell {
+  text-align: center;
+  font-weight: 600;
+  color: #1f3a8a;
+  font-variant-numeric: tabular-nums;
+}
+
+.status-cell {
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #1f3a8a;
 }
 
 .bank-footer-controls {

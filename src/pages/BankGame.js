@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import "../styles/bank.css";
 
 const avatarOptions = [
@@ -249,6 +249,12 @@ export default function BankGame() {
       const updatedPot = pot + value;
       const summary = `Round ${currentRound}: ${roller.name} rolled ${d1} + ${d2} for ${value} points. Pot is now ${updatedPot}.`;
 
+      setPlayers((prev) =>
+        prev.map((player, index) =>
+          index === currentPlayer ? { ...player, roundRolls: 1 } : player
+        )
+      );
+
       setPot(updatedPot);
 
       const isLast = currentPlayer + 1 >= players.length;
@@ -382,11 +388,29 @@ export default function BankGame() {
       ? `Computer${player.strategy ? ` · ${formatStrategy(player.strategy)}` : ""}`
       : "Human";
 
-  const leaderScore = players.length ? Math.max(...players.map((p) => p.score)) : 0;
-  const leaders = leaderScore > 0 ? players.filter((p) => p.score === leaderScore) : [];
-  const scoreboardRows = players
-    .map((player, index) => ({ player, originalIndex: index }))
-    .sort((a, b) => b.player.score - a.player.score);
+  const leaderScore = useMemo(
+    () => (players.length ? Math.max(...players.map((p) => p.score)) : 0),
+    [players]
+  );
+
+  const leaders = useMemo(
+    () => (leaderScore > 0 ? players.filter((p) => p.score === leaderScore) : []),
+    [leaderScore, players]
+  );
+
+  const scoreboardRows = useMemo(
+    () =>
+      players
+        .map((player, index) => ({ player, originalIndex: index }))
+        .sort((a, b) => {
+          if (b.player.score !== a.player.score) {
+            return b.player.score - a.player.score;
+          }
+
+          return a.player.name.localeCompare(b.player.name);
+        }),
+    [players]
+  );
 
   if (phase === 0) {
     return (
@@ -625,6 +649,7 @@ export default function BankGame() {
               <th>Player</th>
               <th>Type</th>
               <th>Score</th>
+              <th>Rolls</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -640,7 +665,8 @@ export default function BankGame() {
                 <td>{player.name}</td>
                 <td className="type-cell">{describePlayerType(player)}</td>
                 <td>{player.score}</td>
-                <td>
+                <td className="rolls-cell">{player.roundRolls ?? 0}</td>
+                <td className="status-cell">
                   {phase === 3
                     ? player.score === leaderScore && leaderScore > 0
                       ? "Winner"
