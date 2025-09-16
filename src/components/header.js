@@ -7,7 +7,6 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
-  const [openSection, setOpenSection] = useState(null);
   const navRef = useRef(null);
   const navigate = useNavigate();
 
@@ -25,7 +24,6 @@ export default function Header() {
     const handleOutsideClick = (e) => {
       if (navRef.current && !navRef.current.contains(e.target)) {
         setMenuOpen(false);
-        setOpenSection(null);
       }
     };
     document.addEventListener("mousedown", handleOutsideClick);
@@ -41,7 +39,6 @@ export default function Header() {
       await signOut(auth);
       navigate("/"); // redirect to home or login screen
       setMenuOpen(false);
-      setOpenSection(null);
     } catch (error) {
       console.error("Logout error:", error.message);
     }
@@ -59,7 +56,6 @@ export default function Header() {
           className="menu-toggle"
           onClick={() => {
             setMenuOpen(!menuOpen);
-            setOpenSection(null);
           }}
         >
           ☰
@@ -74,7 +70,6 @@ export default function Header() {
               className={({ isActive }) => (isActive ? "active-link" : "")}
               onClick={() => {
                 setMenuOpen(false);
-                setOpenSection(null);
               }}
             >
               Home
@@ -88,7 +83,6 @@ export default function Header() {
                 className={({ isActive }) => (isActive ? "active-link" : "")}
                 onClick={() => {
                   setMenuOpen(false);
-                  setOpenSection(null);
                 }}
               >
                 Login
@@ -105,4 +99,4 @@ export default function Header() {
       )}
     </nav>
   );
-} // ✅ This is the missing piece!
+}

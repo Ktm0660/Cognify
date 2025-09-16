@@ -14,7 +14,6 @@ export default function Game() {
     const [showFinalGuess, setShowFinalGuess] = useState(false);
     const [finalGuess, setFinalGuess] = useState("");
     const [guessResult, setGuessResult] = useState("");
-    const [timeSpentCorrect, setTimeSpentCorrect] = useState(null);
     const [timeSpentIncorrect, setTimeSpentIncorrect] = useState([]);
     const [answers, setAnswers] = useState([]);
     const [startTime, setStartTime] = useState(null);
@@ -152,7 +151,6 @@ export default function Game() {
         if (bestMatch.bestMatch.rating >= 0.9) {
             const timeCorrect = Date.now() - startTime;
             setGuessResult(`✅ Correct! The pattern is an increasing sequence. (Matched: "${bestMatch.bestMatch.target}")`);
-            setTimeSpentCorrect(timeCorrect); // Calculate time spent
             setGameOver(true); // Set game over state
 
             // 🔥 Save to Firestore
