@@ -265,8 +265,8 @@ export default function BankGame() {
           `${summary} Phase 2 begins! Roll or bank. A 7 ends the round and rolling doubles doubles the pot.`
         );
       } else {
-        setCurrentPlayer(next);
-        setCurrentPlayer(currentPlayer + 1);
+        const nextPlayer = (currentPlayer + 1) % players.length;
+        setCurrentPlayer(nextPlayer);
         setMessage(summary);
       }
       return;
