@@ -40,7 +40,7 @@ export default function HomePage() {
 /* ---------------- UI PRIMITIVES ---------------- */
 function PrimaryLinkButton({ href, children, ariaLabel }: { href: string; children: React.ReactNode; ariaLabel?: string }) {
   return (
-    <Link href={href} aria-label={ariaLabel} className="primary-button">
+    <Link href={href} aria-label={ariaLabel} className="btn-primary">
       {children}
     </Link>
   );
@@ -48,7 +48,7 @@ function PrimaryLinkButton({ href, children, ariaLabel }: { href: string; childr
 
 function SecondaryButton({ children, onClick, ariaLabel }: { children: React.ReactNode; onClick?: () => void; ariaLabel?: string }) {
   return (
-    <button type="button" onClick={onClick} aria-label={ariaLabel} className="secondary-button">
+    <button type="button" onClick={onClick} aria-label={ariaLabel} className="btn-ghost">
       {children}
     </button>
   );
