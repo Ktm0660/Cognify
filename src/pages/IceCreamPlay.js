@@ -1,10 +1,20 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import { useRouter } from "next/router";
+import React, { useMemo, useState } from "react";
 
 
 export default function IceCreamPlay() {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const router = useRouter();
+  const { avatar: avatarQuery, rounds: roundsQuery, difficulty: difficultyQuery } = router.query;
+  const avatar = useMemo(() => (typeof avatarQuery === "string" ? avatarQuery : "🍦"), [avatarQuery]);
+  const rounds = useMemo(() => {
+    if (typeof roundsQuery === "string") {
+      const parsed = parseInt(roundsQuery, 10);
+      return Number.isNaN(parsed) ? 5 : parsed;
+    }
+    return 5;
+  }, [roundsQuery]);
+  const totalRounds = useMemo(() => (rounds > 0 ? rounds : 1), [rounds]);
+  const difficulty = useMemo(() => (typeof difficultyQuery === "string" ? difficultyQuery : "Easy"), [difficultyQuery]);
   const [currentRound, setCurrentRound] = useState(1);
   const [playerChoice, setPlayerChoice] = useState(null);
   const [aiChoice, setAiChoice] = useState(null);
@@ -13,7 +23,6 @@ export default function IceCreamPlay() {
   const [showResult, setShowResult] = useState(false);
   const [showInstructions, setShowInstructions] = useState(true);
   const [playerHistory, setPlayerHistory] = useState([]);
-  const { avatar, rounds, difficulty } = location.state || {};
 
 
   function handlePlayerChoice(choice) {
@@ -22,19 +31,20 @@ export default function IceCreamPlay() {
     let ai;
   
     // 💡 EASY: Random guess
-    if (difficulty === "Easy") {
+    const level = typeof difficulty === "string" ? difficulty : "Easy";
+    if (level === "Easy" || level.toLowerCase() === "easy") {
       ai = Math.random() < 0.5 ? 3 : 5;
-  
+
     // 💡 MEDIUM: Tit-for-tat
-    } else if (difficulty === "Medium") {
+    } else if (level === "Medium" || level.toLowerCase() === "medium") {
       if (playerHistory.length === 0) {
         ai = 5; // start friendly
       } else {
         ai = playerHistory[playerHistory.length - 1]; // copy last move
       }
-  
+
     // 💡 HARD: If player cooperates (5) consistently, AI does too. Else defect.
-    } else if (difficulty === "Hard") {
+    } else if (level === "Hard" || level.toLowerCase() === "hard") {
       // use only the player's previous behaviour to decide
       const recent = prevHistory.slice(-3);
       const coopRate = recent.filter((c) => c === 5).length / Math.max(recent.length, 1);
@@ -74,17 +84,18 @@ export default function IceCreamPlay() {
   
   // 🔁 Now this is OUTSIDE
   function handleNextRound() {
-    if (currentRound < rounds) {
+    if (currentRound < totalRounds) {
       setCurrentRound((prev) => prev + 1);
       setPlayerChoice(null);
       setAiChoice(null);
       setShowResult(false);
     } else {
-      navigate('/icecreamresults', {
-        state: {
-          playerTotal,
-          aiTotal,
-          rounds,
+      router.push({
+        pathname: "/icecreamresults",
+        query: {
+          playerTotal: String(playerTotal),
+          aiTotal: String(aiTotal),
+          rounds: String(totalRounds),
         },
       });
       setPlayerHistory([]);
@@ -93,7 +104,7 @@ export default function IceCreamPlay() {
   
   return (
     <div className="icecream-play">
-      <h1>🍦 Ice Cream Battle: Day {currentRound} of {rounds}</h1>
+      <h1>🍦 Ice Cream Battle: Day {currentRound} of {totalRounds}</h1>
       <p>Your avatar: {avatar}</p>
 
       {showInstructions && (
@@ -118,55 +129,55 @@ export default function IceCreamPlay() {
         </div>
       )}
   
-    {!showInstructions && !showResult && (
-    <div className="choice-buttons">
-      <button onClick={() => handlePlayerChoice(3)}>$3</button>
-     <button onClick={() => handlePlayerChoice(5)}>$5</button>
-    </div>
-)}
+        {!showInstructions && !showResult && (
+          <div className="choice-buttons">
+            <button onClick={() => handlePlayerChoice(3)}>$3</button>
+            <button onClick={() => handlePlayerChoice(5)}>$5</button>
+          </div>
+        )}
 
-  
-    {!showInstructions && showResult && (
-      <div className="result-display">
-        <h2>📊 Day {currentRound} Results</h2>
-  
-          <div className="choice-row">
-            <p><strong>You:</strong> {avatar} chose <span className="price">${playerChoice}</span></p>
-            <p><strong>AI:</strong> 🤖 chose <span className="price">${aiChoice}</span></p>
+
+        {!showInstructions && showResult && (
+          <div className="result-display">
+            <h2>📊 Day {currentRound} Results</h2>
+
+            <div className="choice-row">
+              <p><strong>You:</strong> {avatar} chose <span className="price">${playerChoice}</span></p>
+              <p><strong>AI:</strong> 🤖 chose <span className="price">${aiChoice}</span></p>
+            </div>
+
+            <div className="earnings">
+              <p>💵 You earned: <strong>
+                {playerChoice === 5 && aiChoice === 5
+                  ? "$300"
+                  : playerChoice === 3 && aiChoice === 5
+                  ? "$500"
+                  : playerChoice === 5 && aiChoice === 3
+                  ? "$0"
+                  : "$100"}
+              </strong></p>
+
+              <p>💵 AI earned: <strong>
+                {playerChoice === 5 && aiChoice === 5
+                  ? "$300"
+                  : playerChoice === 3 && aiChoice === 5
+                  ? "$0"
+                  : playerChoice === 5 && aiChoice === 3
+                  ? "$500"
+                  : "$100"}
+              </strong></p>
+            </div>
+
+            <div className="totals">
+              <p>Total Earnings:</p>
+              <p><strong>You:</strong> ${playerTotal} &nbsp;&nbsp; | &nbsp;&nbsp; <strong>AI:</strong> ${aiTotal}</p>
+            </div>
+
+            <button onClick={handleNextRound} className="next-button">
+              {currentRound < totalRounds ? "➡️ Next Day" : "🏁 See Final Results"}
+            </button>
           </div>
-  
-          <div className="earnings">
-            <p>💵 You earned: <strong>
-              {playerChoice === 5 && aiChoice === 5
-                ? "$300"
-                : playerChoice === 3 && aiChoice === 5
-                ? "$500"
-                : playerChoice === 5 && aiChoice === 3
-                ? "$0"
-                : "$100"}
-            </strong></p>
-  
-            <p>💵 AI earned: <strong>
-              {playerChoice === 5 && aiChoice === 5
-                ? "$300"
-                : playerChoice === 3 && aiChoice === 5
-                ? "$0"
-                : playerChoice === 5 && aiChoice === 3
-                ? "$500"
-                : "$100"}
-            </strong></p>
-          </div>
-  
-          <div className="totals">
-            <p>Total Earnings:</p>
-            <p><strong>You:</strong> ${playerTotal} &nbsp;&nbsp; | &nbsp;&nbsp; <strong>AI:</strong> ${aiTotal}</p>
-          </div>
-  
-          <button onClick={handleNextRound} className="next-button">
-            {currentRound < rounds ? "➡️ Next Day" : "🏁 See Final Results"}
-          </button>
-        </div>
-      )}
+        )}
     </div>
   );
 }  

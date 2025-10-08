@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/router";
 import { doc, getDoc } from "firebase/firestore";
 import { db, auth, googleProvider } from "../firebase";
 import "../styles/login.css";
@@ -11,7 +11,7 @@ function Login() {
   const [error, setError] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [logoActive, setLogoActive] = useState(false);
-  const navigate = useNavigate();
+  const router = useRouter();
   const emailInputRef = useRef(null);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ function Login() {
   const handleGoogleSignIn = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
-      navigate("/");
+      router.push("/");
     } catch (error) {
       console.error("Google Sign-in error:", error.message);
     }
@@ -43,9 +43,9 @@ function Login() {
 
         const data = docSnap.data();
         if (data?.completedStarterInfo) {
-          navigate("/");
+          router.push("/");
         } else {
-          navigate("/info");
+          router.push("/info");
         }
       }
     } catch (err) {
@@ -181,7 +181,7 @@ function Login() {
           </button>
           <p className="signup-redirect">
             Don't have an account?{" "}
-            <span className="signup-link" onClick={() => navigate("/signup")}>
+            <span className="signup-link" onClick={() => router.push("/signup")}>
               Sign up here
             </span>
           </p>

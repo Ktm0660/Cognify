@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/router";
 
 export default function IceCreamConfig() {
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const [rounds, setRounds] = useState(5); // default value
-  const [difficulty, setDifficulty] = useState("easy"); // new
-  const navigate = useNavigate();
+  const [difficulty, setDifficulty] = useState("Easy"); // new
+  const router = useRouter();
   const avatars = ["🍦", "🧁", "🍨", "🧊"];
   const roundOptions = [1, 3, 5, 10, 20];
   const difficultyLevels = ["Easy", "Medium", "Hard"];
@@ -57,8 +57,13 @@ export default function IceCreamConfig() {
         className="start-button"
         onClick={() => {
           if (selectedAvatar) {
-            navigate("/icecreamplay", {
-              state: { avatar: selectedAvatar, rounds, difficulty },
+            router.push({
+              pathname: "/icecreamplay",
+              query: {
+                avatar: selectedAvatar,
+                rounds: String(rounds),
+                difficulty,
+              },
             });
           } else {
             alert("Please select an avatar before starting!");

@@ -1,11 +1,33 @@
-import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useMemo } from "react";
+import { useRouter } from "next/router";
 
 export default function IceCreamResults() {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const router = useRouter();
+  const { playerTotal: playerTotalQuery, aiTotal: aiTotalQuery, rounds: roundsQuery } = router.query;
 
-  const { playerTotal = 0, aiTotal = 0, rounds = 0 } = location.state || {};
+  const playerTotal = useMemo(() => {
+    if (typeof playerTotalQuery === "string") {
+      const parsed = parseInt(playerTotalQuery, 10);
+      return Number.isNaN(parsed) ? 0 : parsed;
+    }
+    return 0;
+  }, [playerTotalQuery]);
+
+  const aiTotal = useMemo(() => {
+    if (typeof aiTotalQuery === "string") {
+      const parsed = parseInt(aiTotalQuery, 10);
+      return Number.isNaN(parsed) ? 0 : parsed;
+    }
+    return 0;
+  }, [aiTotalQuery]);
+
+  const rounds = useMemo(() => {
+    if (typeof roundsQuery === "string") {
+      const parsed = parseInt(roundsQuery, 10);
+      return Number.isNaN(parsed) ? 0 : parsed;
+    }
+    return 0;
+  }, [roundsQuery]);
 
   const maxCombined = rounds * 600; // Both charge $5 each round
   const combinedTotal = playerTotal + aiTotal;
@@ -23,8 +45,8 @@ export default function IceCreamResults() {
           Together you achieved <strong>{percentOfMax}%</strong> of the maximum
           possible profit.
         </p>
-        <button className="results-button" onClick={() => navigate("/icecreamgame")}>Play Again</button>
-        <button className="results-button" onClick={() => navigate("/")}>Home</button>
+        <button className="results-button" onClick={() => router.push("/IceCreamConfig")}>Play Again</button>
+        <button className="results-button" onClick={() => router.push("/")}>Home</button>
       </div>
     </div>
   );
