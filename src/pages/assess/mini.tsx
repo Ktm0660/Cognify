@@ -1,14 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useRouter } from "next/router";
-
-export type Trait =
-  | "exploration"
-  | "logic"
-  | "adaptability"
-  | "risk"
-  | "cooperation"
-  | "metacognition"
-  | "creativity";
+import type { Trait } from "../../lib/assess/store";
+import { saveAssessment } from "../../lib/assess/store";
 
 type Item = {
   id: string;
@@ -104,39 +97,49 @@ export default function MiniAssessmentPage() {
   const router = useRouter();
   const [i, setI] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
+  const [pendingChoice, setPendingChoice] = useState<Answer | null>(null);
   const [saving, setSaving] = useState(false);
-  const item = useMemo(()=>ITEMS[i], [i]);
-  const pct = Math.round(((i) / ITEMS.length) * 100);
+  const item = useMemo(() => ITEMS[i], [i]);
+  const pct = Math.round((i / ITEMS.length) * 100);
 
   function submitChoice(choiceId: string) {
-    setAnswers(prev => [...prev, { itemId: item.id, choiceId }]);
-    advance();
+    const base = answers.filter((a) => a.itemId !== item.id);
+    const next: Answer = { itemId: item.id, choiceId };
+    if (item.askConfidence) {
+      setPendingChoice(next);
+      setAnswers(base);
+    } else {
+      const nextAnswers = [...base, next];
+      setAnswers(nextAnswers);
+      advance(nextAnswers);
+    }
   }
+
   function submitConfidence(conf: number) {
-    setAnswers(prev => {
-      const copy = [...prev];
-      const idx = copy.findIndex(a => a.itemId === item.id);
-      if (idx >= 0) copy[idx] = { ...copy[idx], confidence: conf };
-      return copy;
-    });
-    advance();
+    if (!pendingChoice) return;
+    const base = answers.filter((a) => a.itemId !== pendingChoice.itemId);
+    const nextAnswers = [...base, { ...pendingChoice, confidence: conf }];
+    setPendingChoice(null);
+    setAnswers(nextAnswers);
+    advance(nextAnswers);
   }
-  function advance() {
-    if (i < ITEMS.length - 1) setI(i + 1);
-    else {
+
+  function advance(nextAnswers: Answer[]) {
+    setPendingChoice(null);
+    if (i < ITEMS.length - 1) {
+      setI(i + 1);
+    } else {
       setSaving(true);
-      const scores = scoreAssessment(answers);
-      try {
-        localStorage.setItem("cognify.assessment.latest", JSON.stringify({ scores, savedAt: new Date().toISOString() }));
-      } catch {}
-      setTimeout(()=>router.push("/"), 400);
+      const scores = scoreAssessment(nextAnswers);
+      saveAssessment(scores);
+      setTimeout(() => router.push("/"), 400);
     }
   }
 
   if (saving) {
     return (
-      <main className="max-w-3xl mx-auto px-4 py-16">
-        <div className="card p-8 text-center">
+      <main className="max-w-screen-md mx-auto px-4 py-10">
+        <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
           <h2 className="text-2xl font-bold">Saving your Thinking Snapshot…</h2>
           <p className="mt-2 text-slate-600">Redirecting to home.</p>
         </div>
@@ -145,37 +148,33 @@ export default function MiniAssessmentPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50">
-      <div className="mx-auto max-w-3xl px-4 py-10">
-        {/* Progress */}
-        <div aria-label="Progress" className="h-2 bg-slate-200 rounded-full overflow-hidden">
-          <div className="h-2 bg-indigo-500 transition-all" style={{ width: `${pct}%` }} />
+    <main className="max-w-screen-md mx-auto px-4 py-10">
+      <div aria-label="Progress" className="h-2 bg-slate-100 rounded-full overflow-hidden">
+        <div className="h-2 bg-indigo-500 transition-all" style={{ width: `${pct}%` }} />
+      </div>
+
+      <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h2 className="text-xl font-semibold">{LABEL[item.trait]} • Question</h2>
+        <p className="mt-2 text-slate-700">{item.prompt}</p>
+        {item.note && <p className="mt-1 text-slate-500 text-sm">{item.note}</p>}
+
+        <div className="mt-5 grid gap-3">
+          {item.options.map((op) => (
+            <button
+              key={op.id}
+              onClick={() => submitChoice(op.id)}
+              className="w-full text-left rounded-lg border border-slate-200 px-4 py-3 hover:bg-slate-50 active:scale-[.99] transition"
+            >
+              {op.label}
+            </button>
+          ))}
         </div>
 
-        {/* Card */}
-        <div className="mt-6 card p-6">
-          <h2 className="text-xl font-semibold">{LABEL[item.trait]} • Question</h2>
-          <p className="mt-2 text-slate-700">{item.prompt}</p>
-          {item.note && <p className="mt-1 text-slate-500 text-sm">{item.note}</p>}
+        {item.askConfidence && pendingChoice?.itemId === item.id && (
+          <ConfidenceCapture onPick={submitConfidence} />
+        )}
 
-          <div className="mt-5 grid gap-3">
-            {item.options.map(op => (
-              <button
-                key={op.id}
-                onClick={()=>submitChoice(op.id)}
-                className="w-full text-left rounded-lg border border-slate-200 px-4 py-3 hover:bg-slate-50 active:scale-[.99] transition"
-              >
-                {op.label}
-              </button>
-            ))}
-          </div>
-
-          {item.askConfidence && (
-            <ConfidenceCapture onPick={submitConfidence} />
-          )}
-
-          <p className="mt-6 text-xs text-slate-500">Question {i+1} of {ITEMS.length}</p>
-        </div>
+        <p className="mt-6 text-xs text-slate-500">Question {i + 1} of {ITEMS.length}</p>
       </div>
     </main>
   );

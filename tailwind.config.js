@@ -1,38 +1,35 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: "class",
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx}",
-    "./src/components/**/*.{js,ts,jsx,tsx}",
-    "./src/features/**/*.{js,ts,jsx,tsx}",
-    "./src/layouts/**/*.{js,ts,jsx,tsx}"
+    "./src/pages/**/*.{js,jsx,ts,tsx}",
+    "./src/components/**/*.{js,jsx,ts,tsx}",
+    "./src/layouts/**/*.{js,jsx,ts,tsx}",
+    "./src/features/**/*.{js,jsx,ts,tsx}"
   ],
   theme: {
     extend: {
+      fontFamily: {
+        display: ["var(--font-inter)", "ui-sans-serif", "system-ui"],
+        sans: ["var(--font-inter)", "ui-sans-serif", "system-ui"],
+      },
       colors: {
-        indigo: {
-          50: "#EEF2FF",
-          100: "#E0E7FF",
-          500: "#6366F1",
-          600: "#4F46E5",
-        },
-        slate: {
-          50: "#F8FAFC",
-          100: "#F1F5F9",
-          200: "#E2E8F0",
-          500: "#64748B",
-          600: "#475569",
-          700: "#334155",
-          900: "#0F172A",
-        },
+        surface: {
+          DEFAULT: "#0b1020",
+          50: "#f6f7fb",
+          100: "#eef0f7",
+        }
       },
       boxShadow: {
-        soft: "0 10px 25px -10px rgba(0,0,0,0.12)",
-      },
-      borderRadius: {
-        "2xl": "1rem",
-      },
+        float: "0 10px 30px rgba(2,6,23,.08)",
+        glow: "0 10px 30px rgba(99,102,241,.25)",
+      }
     },
   },
-  darkMode: "class",
   plugins: [],
+  safelist: [
+    "from-violet-500","via-fuchsia-500","to-amber-400",
+    "from-indigo-500","to-cyan-400",
+    "from-sky-500","to-emerald-400"
+  ]
 };
