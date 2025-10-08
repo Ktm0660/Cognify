@@ -172,7 +172,7 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button type="submit" className="primary-button">
+          <button type="submit" className="btn-primary">
             Log In
           </button>
           <button type="button" className="google-button" onClick={handleGoogleSignIn}>

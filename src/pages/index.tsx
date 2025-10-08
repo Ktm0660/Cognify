@@ -40,7 +40,7 @@ export default function HomePage() {
 /* ---------------- UI PRIMITIVES ---------------- */
 function PrimaryLinkButton({ href, children, ariaLabel }: { href: string; children: React.ReactNode; ariaLabel?: string }) {
   return (
-    <Link href={href} aria-label={ariaLabel} className="primary-button">
+    <Link href={href} aria-label={ariaLabel} className="btn-primary">
       {children}
     </Link>
   );
@@ -48,7 +48,7 @@ function PrimaryLinkButton({ href, children, ariaLabel }: { href: string; childr
 
 function SecondaryButton({ children, onClick, ariaLabel }: { children: React.ReactNode; onClick?: () => void; ariaLabel?: string }) {
   return (
-    <button type="button" onClick={onClick} aria-label={ariaLabel} className="secondary-button">
+    <button type="button" onClick={onClick} aria-label={ariaLabel} className="btn-ghost">
       {children}
     </button>
   );
@@ -224,7 +224,7 @@ function GamesShowcase() {
                 })}
               </div>
               <div className="games__actions">
-                <Link href="/assess/mini" className="secondary-button">
+                <Link href="/assess/mini" className="btn-ghost">
                   Play Demo
                 </Link>
               </div>
@@ -267,7 +267,7 @@ function GrowthSection() {
               ))}
             </div>
             <div className="growth__actions">
-              <Link href="/assess/mini" className="secondary-button">
+              <Link href="/assess/mini" className="btn-ghost">
                 View Full Dashboard
               </Link>
             </div>
@@ -285,7 +285,7 @@ function GrowthSection() {
               <PrimaryLinkButton href="/assess/mini" ariaLabel="Start your journey">
                 Start Your Journey
               </PrimaryLinkButton>
-              <Link href="#traits-heading" className="secondary-button">
+              <Link href="#traits-heading" className="btn-ghost">
                 See Example Insights
               </Link>
             </div>
@@ -323,7 +323,7 @@ function WhyItMatters() {
             <li>Strategies for cooperation</li>
           </ul>
           <div className="why__actions">
-            <Link href="#how-heading" className="secondary-button">
+            <Link href="#how-heading" className="btn-ghost">
               Learn the Science
             </Link>
           </div>
