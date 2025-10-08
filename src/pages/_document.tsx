@@ -5,24 +5,27 @@ export default class MyDocument extends Document {
     return (
       <Html lang="en" className="h-full">
         <Head>
-          {/* Tailwind CDN fallback — no build-time plugin required */}
           <script src="https://cdn.tailwindcss.com"></script>
           <script
             dangerouslySetInnerHTML={{
               __html: `
                 tailwind.config = {
                   darkMode: 'class',
-                  theme: { extend: {
-                    colors: { surface: { light: '#ffffff', dark: '#0b1020' } },
-                    boxShadow: { soft: '0 10px 30px -10px rgba(2,6,23,0.15)' }
-                  }},
-                  corePlugins: {},
+                  theme: {
+                    extend: {
+                      boxShadow: {
+                        soft: '0 10px 30px -10px rgba(2,6,23,0.15)'
+                      },
+                      backgroundImage: {
+                        'hero': 'radial-gradient(60% 60% at 50% 0%, rgba(99,102,241,.20) 0%, rgba(255,255,255,0) 60%)'
+                      }
+                    }
+                  },
                   plugins: []
-                };
+                }
               `,
             }}
           />
-          {/* System font stack for a clean look */}
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
           <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
         </Head>
