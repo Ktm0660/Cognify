@@ -23,7 +23,7 @@ export default function HomePage() {
   const scrollToHow = () => howRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   return (
-    <main className="bg-white text-slate-900">
+    <main className="home-landing">
       <Hero onHowClick={scrollToHow} />
       <div ref={howRef}>
         <HowItWorks />
@@ -40,55 +40,53 @@ export default function HomePage() {
 /* ---------------- UI PRIMITIVES ---------------- */
 function PrimaryLinkButton({ href, children, ariaLabel }: { href: string; children: React.ReactNode; ariaLabel?: string }) {
   return (
-    <Link
-      href={href}
-      aria-label={ariaLabel}
-      className="inline-flex items-center justify-center rounded-md bg-indigo-600 px-5 py-3 text-white font-semibold shadow-sm hover:bg-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 transition"
-    >
+    <Link href={href} aria-label={ariaLabel} className="primary-button">
       {children}
     </Link>
   );
 }
+
 function SecondaryButton({ children, onClick, ariaLabel }: { children: React.ReactNode; onClick?: () => void; ariaLabel?: string }) {
   return (
-    <button
-      onClick={onClick}
-      aria-label={ariaLabel}
-      className="inline-flex items-center justify-center rounded-md border border-slate-300 px-5 py-3 text-slate-700 font-semibold hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 transition"
-    >
+    <button type="button" onClick={onClick} aria-label={ariaLabel} className="secondary-button">
       {children}
     </button>
   );
 }
-function TraitPill({ label }: { label: string }) {
-  return (
-    <span className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium mr-2 mb-2 border bg-white text-slate-700 border-slate-300">
-      {label}
-    </span>
-  );
+
+function TraitPill({ label, isActive = false }: { label: string; isActive?: boolean }) {
+  return <span className={`trait-pill${isActive ? " trait-pill--active" : ""}`}>{label}</span>;
 }
 
 /* ---------------- HERO ---------------- */
 function Hero({ onHowClick }: { onHowClick: () => void }) {
   return (
-    <section className="relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100 via-white to-white" aria-hidden="true" />
-      <div className="relative mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-20">
-        <header className="text-center">
-          <div className="mx-auto inline-block rounded-full border border-indigo-200 bg-indigo-50 px-4 py-1 text-xs font-semibold text-indigo-700 mb-6">
-            Cognify
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900">Play Smarter. Think Deeper.</h1>
-          <p className="mt-4 max-w-2xl mx-auto text-lg text-slate-600">
+    <section className="hero" aria-labelledby="hero-title">
+      <div className="hero__background" aria-hidden="true" />
+      <div className="section-inner hero__content">
+        <div className="hero__header">
+          <span className="hero__badge">Cognify</span>
+          <p className="hero__welcome">Welcome to the Thinking Games Lab</p>
+          <h1 id="hero-title" className="hero__title">
+            Play Smarter. Think Deeper.
+          </h1>
+          <p className="hero__subtitle">
             Challenge your mind with games that reveal how you think. Measure your skills. Train your brain. Watch yourself grow.
           </p>
-          <div className="mt-8 flex items-center justify-center gap-4 flex-wrap">
-            <PrimaryLinkButton href="/assess/mini" ariaLabel="Take the assessment">Take the 3-Minute Assessment</PrimaryLinkButton>
-            <SecondaryButton ariaLabel="How It Works" onClick={onHowClick}>How It Works</SecondaryButton>
+          <div className="hero__actions">
+            <PrimaryLinkButton href="/assess/mini" ariaLabel="Take the 3 minute assessment">
+              Take the 3-Minute Assessment
+            </PrimaryLinkButton>
+            <SecondaryButton ariaLabel="Scroll to how it works" onClick={onHowClick}>
+              How It Works
+            </SecondaryButton>
           </div>
-        </header>
-        <div className="mt-14 flex justify-center flex-wrap gap-3 opacity-80">
-          {TRAITS.slice(0, 5).map((t) => <TraitPill key={t.id} label={t.label} />)}
+        </div>
+
+        <div className="hero__traits" aria-label="Highlighted traits">
+          {TRAITS.slice(0, 5).map((t) => (
+            <TraitPill key={t.id} label={t.label} />
+          ))}
         </div>
       </div>
     </section>
@@ -102,18 +100,24 @@ function HowItWorks() {
     { title: "Discover", desc: "See your Thinking Profile grow across seven skills.", icon: "🧭" },
     { title: "Improve", desc: "Get tailored missions to strengthen how you think.", icon: "⚡" },
   ];
+
   return (
-    <section className="py-20 bg-white" aria-labelledby="how-heading">
-      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-        <h2 id="how-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 text-center">How It Works</h2>
-        <p className="mt-3 text-center text-slate-600 max-w-2xl mx-auto">Play quick games, discover your strengths, and follow missions to grow.</p>
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {steps.map((s) => (
-            <div key={s.title} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition hover:-translate-y-0.5">
-              <div className="text-3xl" aria-hidden="true">{s.icon}</div>
-              <h3 className="mt-3 text-lg font-semibold">{s.title}</h3>
-              <p className="mt-2 text-slate-600">{s.desc}</p>
-            </div>
+    <section className="how" aria-labelledby="how-heading">
+      <div className="section-inner">
+        <h2 id="how-heading" className="section-title">
+          How It Works
+        </h2>
+        <p className="section-subtitle">Play quick games, discover your strengths, and follow missions to grow.</p>
+
+        <div className="how__grid" role="list">
+          {steps.map((step) => (
+            <article key={step.title} className="how__card" role="listitem">
+              <div className="how__icon" aria-hidden="true">
+                {step.icon}
+              </div>
+              <h3 className="how__title">{step.title}</h3>
+              <p className="how__description">{step.desc}</p>
+            </article>
           ))}
         </div>
       </div>
@@ -148,38 +152,42 @@ function SevenTraits() {
   const mockValues = [0.65, 0.55, 0.48, 0.6, 0.42, 0.58, 0.45];
 
   return (
-    <section className="py-20 bg-slate-50" aria-labelledby="traits-heading">
-      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-        <h2 id="traits-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 text-center">The Seven Traits</h2>
-        <p className="mt-3 text-center text-slate-600 max-w-2xl mx-auto">Seven skills that make thinking clear, creative, and adaptable.</p>
+    <section className="traits" aria-labelledby="traits-heading">
+      <div className="section-inner">
+        <h2 id="traits-heading" className="section-title">
+          The Seven Traits
+        </h2>
+        <p className="section-subtitle">Seven skills that make thinking clear, creative, and adaptable.</p>
 
-        <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-          <div className="flex items-center justify-center">
-            <RadarSvg values={mockValues} />
+        <div className="traits__grid">
+          <div className="traits__radar">
+            <div className="radar">
+              <RadarSvg values={mockValues} />
+            </div>
           </div>
 
-          <div>
-            <ul className="flex flex-wrap gap-2 mb-4" role="list">
-              {TRAITS.map((t) => (
-                <li key={t.id}>
+          <div className="traits__content">
+            <ul className="traits__tabs" role="list">
+              {TRAITS.map((trait) => (
+                <li key={trait.id}>
                   <button
-                    className={`rounded-full px-3 py-1 text-sm font-medium border transition ${
-                      active === t.id ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-slate-700 border-slate-300 hover:border-indigo-300"
-                    }`}
-                    onClick={() => setActive(t.id)}
-                    aria-label={`Select ${t.label}`}
+                    type="button"
+                    className={`traits__tab${active === trait.id ? " traits__tab--active" : ""}`}
+                    onClick={() => setActive(trait.id)}
+                    aria-pressed={active === trait.id}
+                    aria-label={`Show information about ${trait.label}`}
                   >
-                    {t.label}
+                    {trait.label}
                   </button>
                 </li>
               ))}
             </ul>
 
-            <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-              <h3 className="text-lg font-semibold">{activeTrait.label}</h3>
-              <p className="mt-2 text-slate-600">{activeTrait.blurb}</p>
-              <div className="mt-4">
-                <PrimaryLinkButton href="/assess/mini" ariaLabel="Take 3-minute test">
+            <div className="traits__card">
+              <h3 className="traits__card-title">{activeTrait.label}</h3>
+              <p className="traits__card-text">{activeTrait.blurb}</p>
+              <div className="traits__card-actions">
+                <PrimaryLinkButton href="/assess/mini" ariaLabel="Take 3-minute thinking test">
                   Take the 3-Minute Thinking Test
                 </PrimaryLinkButton>
               </div>
@@ -194,27 +202,29 @@ function SevenTraits() {
 /* ---------------- GAMES SHOWCASE ---------------- */
 function GamesShowcase() {
   return (
-    <section className="py-20 bg-white" aria-labelledby="games-heading">
-      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-        <h2 id="games-heading" className="text-2xl sm:text-3xl font-bold text-slate-900 text-center">Inside the Games</h2>
-        <p className="mt-3 text-center text-slate-600 max-w-2xl mx-auto">Play fast, learn fast. Each game targets different thinking skills.</p>
+    <section className="games" aria-labelledby="games-heading">
+      <div className="section-inner">
+        <h2 id="games-heading" className="section-title">
+          Inside the Games
+        </h2>
+        <p className="section-subtitle">Play fast, learn fast. Each game targets different thinking skills.</p>
 
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
-          {GAMES.map((g) => (
-            <article key={g.id} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition hover:-translate-y-0.5">
-              <div className="h-32 rounded-lg bg-gradient-to-br from-indigo-50 to-white border border-indigo-100 flex items-center justify-center text-slate-500">
-                <span className="text-sm">Gameplay Preview</span>
+        <div className="games__grid">
+          {GAMES.map((game) => (
+            <article key={game.id} className="games__card">
+              <div className="games__visual" aria-hidden="true">
+                Gameplay Preview
               </div>
-              <h3 className="mt-4 text-lg font-semibold">{g.name}</h3>
-              <p className="text-slate-600">{g.tagline}</p>
-              <div className="mt-3">
-                {g.traits.map((tId) => {
-                  const t = TRAITS.find((x) => x.id === tId)!;
-                  return <TraitPill key={tId} label={t.label} />;
+              <h3 className="games__card-title">{game.name}</h3>
+              <p className="games__card-text">{game.tagline}</p>
+              <div className="games__traits">
+                {game.traits.map((traitId) => {
+                  const trait = TRAITS.find((t) => t.id === traitId)!;
+                  return <TraitPill key={traitId} label={trait.label} />;
                 })}
               </div>
-              <div className="mt-4">
-                <Link href="/assess/mini" className="inline-flex items-center justify-center rounded-md border border-slate-300 px-5 py-3 text-slate-700 font-semibold hover:bg-slate-50 transition">
+              <div className="games__actions">
+                <Link href="/assess/mini" className="secondary-button">
                   Play Demo
                 </Link>
               </div>
@@ -235,46 +245,49 @@ function GrowthSection() {
     { id: "risk", label: "Risk & Reward", value: 60 },
     { id: "metacognition", label: "Metacognition", value: 58 },
   ];
+
   return (
-    <section className="py-20 bg-slate-50">
-      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h3 className="text-lg font-semibold">Your Thinking Profile</h3>
-            <p className="mt-1 text-slate-600">Watch your scores rise as you master each trait.</p>
-            <div className="mt-5 space-y-3">
-              {bars.map((b) => (
-                <div key={b.id}>
-                  <div className="flex justify-between text-sm">
-                    <span className="font-medium text-slate-700">{b.label}</span>
-                    <span className="text-slate-500">{b.value}</span>
+    <section className="growth" aria-labelledby="growth-heading">
+      <div className="section-inner">
+        <div className="growth__grid">
+          <div className="growth__card">
+            <h3 className="growth__card-title">Your Thinking Profile</h3>
+            <p className="growth__card-text">Watch your scores rise as you master each trait.</p>
+            <div className="growth__bars">
+              {bars.map((bar) => (
+                <div key={bar.id}>
+                  <div className="growth__bar-header">
+                    <span>{bar.label}</span>
+                    <span>{bar.value}</span>
                   </div>
-                  <div className="mt-1 h-2 w-full rounded-full bg-slate-100">
-                    <div className="h-2 rounded-full bg-indigo-500" style={{ width: `${b.value}%` }} />
+                  <div className="growth__bar-track">
+                    <div className="growth__bar-fill" style={{ width: `${bar.value}%` }} />
                   </div>
                 </div>
               ))}
             </div>
-            <div className="mt-6">
-              <Link href="/assess/mini" className="inline-flex items-center justify-center rounded-md border border-slate-300 px-5 py-3 text-slate-700 font-semibold hover:bg-slate-50 transition">
+            <div className="growth__actions">
+              <Link href="/assess/mini" className="secondary-button">
                 View Full Dashboard
               </Link>
             </div>
           </div>
 
-          <div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">Your Growth Over Time</h2>
-            <p className="mt-3 text-slate-600">
+          <div className="growth__content">
+            <h2 id="growth-heading" className="section-title">
+              Your Growth Over Time
+            </h2>
+            <p className="section-subtitle">
               See how your Exploration score rises as you master curiosity. Every round makes your mind a little sharper.
               Personalized missions target your weakest traits so progress always feels within reach.
             </p>
-            <div className="mt-5 flex gap-3">
-              <Link href="/assess/mini" className="inline-flex items-center justify-center rounded-md bg-indigo-600 px-5 py-3 text-white font-semibold shadow-sm hover:bg-indigo-500 transition">
+            <div className="growth__buttons">
+              <PrimaryLinkButton href="/assess/mini" ariaLabel="Start your journey">
                 Start Your Journey
-              </Link>
-              <a href="#traits-heading" className="inline-flex items-center justify-center rounded-md border border-slate-300 px-5 py-3 text-slate-700 font-semibold hover:bg-slate-50 transition">
+              </PrimaryLinkButton>
+              <Link href="#traits-heading" className="secondary-button">
                 See Example Insights
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -286,31 +299,33 @@ function GrowthSection() {
 /* ---------------- WHY IT MATTERS ---------------- */
 function WhyItMatters() {
   return (
-    <section className="py-20 bg-white" aria-labelledby="why-heading">
-      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-        <div>
-          <h2 id="why-heading" className="text-2xl sm:text-3xl font-bold text-slate-900">Why It Matters</h2>
-          <p className="mt-3 text-slate-600">
+    <section className="why" aria-labelledby="why-heading">
+      <div className="section-inner why__grid">
+        <div className="why__content">
+          <h2 id="why-heading" className="section-title">
+            Why It Matters
+          </h2>
+          <p className="section-subtitle">
             Cognify turns cognitive science into play. Every game measures real thinking patterns—exploration, logic, adaptability,
             risk, cooperation, metacognition, and creativity—then gives you insights to grow.
           </p>
-          <p className="mt-3 text-slate-600">We believe critical thinking should be as fun as any video game—and just as rewarding.</p>
-          <div className="mt-4 inline-block rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
-            Backed by research. Designed for growth.
-          </div>
+          <p className="section-subtitle">We believe critical thinking should be as fun as any video game—and just as rewarding.</p>
+          <span className="why__badge">Backed by research. Designed for growth.</span>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-indigo-50 to-white p-8 shadow-sm">
-          <h3 className="text-lg font-semibold">What you’ll build</h3>
-          <ul className="mt-3 list-disc pl-5 text-slate-600 space-y-1">
+        <div className="why__card" aria-labelledby="why-card-title">
+          <h3 id="why-card-title" className="why__card-title">
+            What you’ll build
+          </h3>
+          <ul className="why__list">
             <li>Clarity in how you think</li>
             <li>Confidence under uncertainty</li>
             <li>Creative problem-solving</li>
             <li>Strategies for cooperation</li>
           </ul>
-          <div className="mt-6">
-            <a href="#how-heading" className="inline-flex items-center justify-center rounded-md border border-slate-300 px-5 py-3 text-slate-700 font-semibold hover:bg-slate-50 transition">
+          <div className="why__actions">
+            <Link href="#how-heading" className="secondary-button">
               Learn the Science
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -321,18 +336,20 @@ function WhyItMatters() {
 /* ---------------- CLOSING CTA ---------------- */
 function ClosingCta() {
   return (
-    <section className="relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-indigo-500" aria-hidden="true" />
-      <div className="relative mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-16 text-center">
-        <h2 className="text-3xl font-extrabold text-white">Start your journey to smarter thinking</h2>
-        <p className="mt-3 text-indigo-100 max-w-2xl mx-auto">
-          Compete with friends, track your growth, and see how far your mind can go.
-        </p>
-        <div className="mt-8 flex items-center justify-center gap-4">
-          <PrimaryLinkButton href="/assess/mini" ariaLabel="Play now">Play Now</PrimaryLinkButton>
-          <a aria-label="Learn more" href="#traits-heading" className="inline-flex items-center justify-center rounded-md bg-white/10 px-5 py-3 text-white font-semibold ring-1 ring-white/30 hover:bg-white/20 transition">
+    <section className="cta" aria-labelledby="cta-heading">
+      <div className="cta__background" aria-hidden="true" />
+      <div className="section-inner cta__content">
+        <h2 id="cta-heading" className="cta__title">
+          Start your journey to smarter thinking
+        </h2>
+        <p className="cta__subtitle">Compete with friends, track your growth, and see how far your mind can go.</p>
+        <div className="cta__actions">
+          <PrimaryLinkButton href="/assess/mini" ariaLabel="Play now">
+            Play Now
+          </PrimaryLinkButton>
+          <Link href="#traits-heading" className="cta__secondary">
             Learn More
-          </a>
+          </Link>
         </div>
       </div>
     </section>

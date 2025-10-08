@@ -420,6 +420,11 @@
   text-align: left;
 }
 
+.growth__content .section-subtitle {
+  text-align: left;
+  margin-left: 0;
+}
+
 .growth__buttons {
   margin-top: 2rem;
   display: flex;
