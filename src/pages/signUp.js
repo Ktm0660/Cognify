@@ -23,6 +23,7 @@ function SignUp() {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       alert("Sign up successful! You can now log in.");
+      navigate("/assess/mini");
     } catch (err) {
       setError(err.message);
     }
