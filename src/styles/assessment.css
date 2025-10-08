@@ -1,0 +1,270 @@
+.assessment-shell {
+  min-height: 100vh;
+  padding: clamp(2rem, 4vw, 4rem) clamp(1.5rem, 4vw, 3.5rem);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at top, rgba(56, 189, 248, 0.08), transparent 55%),
+    radial-gradient(circle at 80% 20%, rgba(244, 114, 182, 0.08), transparent 60%),
+    linear-gradient(160deg, rgba(15, 23, 42, 0.9) 0%, rgba(2, 6, 23, 0.88) 60%, rgba(15, 23, 42, 0.95) 100%);
+}
+
+.assessment-shell__inner {
+  width: min(720px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.assessment-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.assessment-progress__track {
+  position: relative;
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.24);
+  overflow: hidden;
+}
+
+.assessment-progress__bar {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #38bdf8, #6366f1);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
+  transition: width 260ms ease;
+}
+
+.assessment-progress__label {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.02em;
+}
+
+.assessment-card {
+  background: var(--color-surface-strong);
+  border-radius: var(--radius-lg);
+  padding: clamp(2rem, 3vw, 2.75rem);
+  border: 1px solid var(--color-border-strong);
+  box-shadow: var(--glow-ambient);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.assessment-card--saving {
+  text-align: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.assessment-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.assessment-title {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 1.9rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-text-primary);
+}
+
+.assessment-subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+}
+
+.assessment-pill {
+  align-self: flex-start;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  color: #c7d2fe;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.assessment-prompt {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+}
+
+.assessment-note {
+  margin: -0.5rem 0 0;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.assessment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.assessment-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  background: rgba(15, 23, 42, 0.75);
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.assessment-option:hover,
+.assessment-option:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(99, 102, 241, 0.55);
+  background: rgba(79, 70, 229, 0.18);
+  box-shadow: 0 15px 35px rgba(79, 70, 229, 0.25);
+  outline: none;
+}
+
+.assessment-option__index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 12px;
+  background: rgba(99, 102, 241, 0.18);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  font-weight: 600;
+  color: #c7d2fe;
+  flex-shrink: 0;
+}
+
+.assessment-option__label {
+  display: block;
+  line-height: 1.5;
+}
+
+.assessment-confidence {
+  margin-top: 0.5rem;
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  border: 1px dashed rgba(148, 163, 184, 0.45);
+  background: rgba(15, 23, 42, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.assessment-confidence__title {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.01em;
+}
+
+.assessment-confidence__slider input[type="range"] {
+  width: 100%;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.35);
+  outline: none;
+}
+
+.assessment-confidence__slider input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #38bdf8;
+  border: 2px solid #0ea5e9;
+  box-shadow: 0 8px 16px rgba(56, 189, 248, 0.35);
+  cursor: pointer;
+}
+
+.assessment-confidence__slider input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #38bdf8;
+  border: 2px solid #0ea5e9;
+  box-shadow: 0 8px 16px rgba(56, 189, 248, 0.35);
+  cursor: pointer;
+}
+
+.assessment-confidence__footer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.assessment-confidence__value {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.assessment-confidence__submit {
+  margin-left: auto;
+  padding: 0.55rem 1.3rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(99, 102, 241, 0.2));
+  color: var(--color-text-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.assessment-confidence__submit:hover,
+.assessment-confidence__submit:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(56, 189, 248, 0.65);
+  box-shadow: 0 12px 24px rgba(56, 189, 248, 0.28);
+  outline: none;
+}
+
+@media (max-width: 640px) {
+  .assessment-shell {
+    padding: clamp(1.5rem, 6vw, 2rem) clamp(1rem, 5vw, 1.5rem);
+  }
+
+  .assessment-card {
+    padding: clamp(1.75rem, 6vw, 2.25rem);
+  }
+
+  .assessment-option {
+    padding: 0.85rem 1rem;
+  }
+
+  .assessment-option__index {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .assessment-progress {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .assessment-progress__label {
+    text-align: right;
+  }
+}

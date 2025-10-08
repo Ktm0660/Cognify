@@ -2,6 +2,8 @@ import React, { useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { saveAssessment, type Trait, type TraitScores } from "../../lib/assess/store";
 
+import "../../styles/assessment.css";
+
 type Item = {
   id: string;
   trait: Trait;
@@ -124,36 +126,58 @@ export default function MiniAssessmentPage() {
     }
   }
 
-  if(saving){
+  if (saving) {
     return (
-      <main className="max-w-screen-md mx-auto px-4 py-12">
-        <h2 className="text-2xl font-bold">Saving your Thinking Snapshot…</h2>
-        <p className="mt-2 text-slate-600">Redirecting to home.</p>
+      <main className="assessment-shell">
+        <div className="assessment-shell__inner">
+          <section className="assessment-card assessment-card--saving" aria-live="polite">
+            <h2 className="assessment-title">Saving your Thinking Snapshot…</h2>
+            <p className="assessment-subtitle">Redirecting you back home in a moment.</p>
+          </section>
+        </div>
       </main>
     );
   }
 
   return (
-    <main className="max-w-screen-md mx-auto px-4 py-10">
-      <div aria-label="Progress" className="h-2 bg-slate-100 rounded-full overflow-hidden">
-        <div className="h-2 bg-indigo-500 transition-all" style={{ width: `${pct}%` }} />
-      </div>
-
-      <div className="mt-6 rounded-2xl border border-slate-200 p-6 shadow-sm">
-        <h2 className="text-xl font-semibold">{LABEL[item.trait]} • Question</h2>
-        <p className="mt-2 text-slate-700">{item.prompt}</p>
-        {item.note && <p className="mt-1 text-slate-500 text-sm">{item.note}</p>}
-
-        <div className="mt-5 grid gap-3">
-          {item.options.map(op=>(
-            <button key={op.id} onClick={()=>submitChoice(op.id)}
-              className="w-full text-left rounded-lg border border-slate-200 px-4 py-3 hover:bg-slate-50 transition">
-              {op.label}
-            </button>
-          ))}
+    <main className="assessment-shell">
+      <div className="assessment-shell__inner">
+        <div className="assessment-progress" aria-label="Progress">
+          <div className="assessment-progress__track">
+            <div className="assessment-progress__bar" style={{ width: `${pct}%` }} />
+          </div>
+          <span className="assessment-progress__label">{pct}% complete</span>
         </div>
 
-        {item.askConfidence && <ConfidenceCapture onPick={submitConfidence} />}
+        <section className="assessment-card" aria-labelledby="assessment-question-title">
+          <header className="assessment-card__header">
+            <span className="assessment-pill">{LABEL[item.trait]}</span>
+            <h2 id="assessment-question-title" className="assessment-title">
+              Question {i + 1} of {ITEMS.length}
+            </h2>
+          </header>
+
+          <p className="assessment-prompt">{item.prompt}</p>
+          {item.note && <p className="assessment-note">{item.note}</p>}
+
+          <div className="assessment-options" role="list">
+            {item.options.map((op, idx) => (
+              <button
+                key={op.id}
+                type="button"
+                onClick={() => submitChoice(op.id)}
+                className="assessment-option"
+              >
+                <span className="assessment-option__index" aria-hidden="true">
+                  {(idx + 10).toString(36).toUpperCase()}
+                </span>
+                <span className="assessment-option__label">{op.label}</span>
+              </button>
+            ))}
+          </div>
+
+          {item.askConfidence && <ConfidenceCapture onPick={submitConfidence} />}
+        </section>
       </div>
     </main>
   );
@@ -162,13 +186,23 @@ export default function MiniAssessmentPage() {
 function ConfidenceCapture({ onPick }: { onPick:(c:number)=>void }){
   const [val,setVal]=useState(3);
   return (
-    <div className="mt-5 rounded-lg border border-dashed border-slate-300 p-4">
-      <p className="text-sm text-slate-600">How confident are you? (1–5)</p>
-      <input type="range" min={1} max={5} value={val} onChange={e=>setVal(Number(e.target.value))} className="w-full" />
-      <div className="mt-2 flex items-center gap-3">
-        <span className="text-xs text-slate-500">Confidence: {val}/5</span>
-        <button className="ml-auto rounded-md border border-slate-300 px-3 py-1 text-sm hover:bg-slate-50"
-          onClick={()=>onPick(val)}>Submit with confidence</button>
+    <div className="assessment-confidence">
+      <p className="assessment-confidence__title">How confident are you? (1–5)</p>
+      <div className="assessment-confidence__slider">
+        <input
+          type="range"
+          min={1}
+          max={5}
+          value={val}
+          onChange={e=>setVal(Number(e.target.value))}
+          aria-label="Confidence from 1 to 5"
+        />
+      </div>
+      <div className="assessment-confidence__footer">
+        <span className="assessment-confidence__value">Confidence: {val}/5</span>
+        <button type="button" className="assessment-confidence__submit" onClick={()=>onPick(val)}>
+          Submit confidence
+        </button>
       </div>
     </div>
   );
