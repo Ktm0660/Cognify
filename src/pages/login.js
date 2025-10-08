@@ -3,7 +3,6 @@ import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { useRouter } from "next/router";
 import { doc, getDoc } from "firebase/firestore";
 import { db, auth, googleProvider } from "../firebase";
-import "../styles/login.css";
 
 function Login() {
   const [email, setEmail] = useState("");

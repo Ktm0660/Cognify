@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-import "../styles/game.css";
 import stringSimilarity from "string-similarity";
 import { auth, db } from "../firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
