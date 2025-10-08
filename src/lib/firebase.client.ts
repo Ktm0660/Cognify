@@ -1,26 +1,40 @@
-import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getApps, getApp, initializeApp, type FirebaseApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider, type Auth } from "firebase/auth";
+import { getFirestore, type Firestore } from "firebase/firestore";
 
-const firebaseConfig = {
-  // TODO: replace with your real config or env vars
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "demo",
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "demo.firebaseapp.com",
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "demo",
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "demo.appspot.com",
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "0",
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:0:web:demo"
-};
+/**
+ * Init only on the client. During SSR/build this returns null,
+ * so pages don't crash if env vars are missing.
+ */
+export function getFirebaseApp(): FirebaseApp | null {
+  if (typeof window === "undefined") return null;
 
-// Ensure we only init on the client, and only once.
-function getFirebaseApp() {
-  if (typeof window === "undefined") {
-    // Avoid initializing during SSR. Components should call from client only.
-    return null as unknown as ReturnType<typeof initializeApp>;
-  }
-  return getApps().length ? getApp() : initializeApp(firebaseConfig);
+  const config = {
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  };
+
+  // If no apiKey, skip init; caller should handle null.
+  if (!config.apiKey) return null;
+
+  return getApps().length ? getApp() : initializeApp(config);
 }
 
-export const app = getFirebaseApp();
-export const auth = app ? getAuth(app) : (null as any);
-export const db   = app ? getFirestore(app) : (null as any);
+export function getFirebaseAuth(): Auth | null {
+  const app = getFirebaseApp();
+  return app ? getAuth(app) : null;
+}
+
+export function getFirebaseProvider(): GoogleAuthProvider | null {
+  if (typeof window === "undefined") return null;
+  return new GoogleAuthProvider();
+}
+
+export function getFirebaseDb(): Firestore | null {
+  const app = getFirebaseApp();
+  return app ? getFirestore(app) : null;
+}

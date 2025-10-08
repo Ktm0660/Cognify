@@ -1,9 +1,25 @@
 import { useState, useRef, useEffect } from "react";
 import stringSimilarity from "string-similarity";
-import { auth, db } from "../firebase";
+import { getFirebaseAuth, getFirebaseDb } from "@/lib/firebase.client";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
 export default function Game() {
+    const [ready, setReady] = useState(false);
+    const [authUnavailable, setAuthUnavailable] = useState(false);
+    const [auth, setAuth] = useState(null);
+    const [db, setDb] = useState(null);
+    useEffect(() => {
+        const authInstance = getFirebaseAuth();
+        const dbInstance = getFirebaseDb();
+        if (!authInstance || !dbInstance) {
+            setAuthUnavailable(true);
+        } else {
+            setAuth(authInstance);
+            setDb(dbInstance);
+        }
+        setReady(true);
+    }, []);
+
     const [showInstructions, setShowInstructions] = useState(true);
     const [num1, setNum1] = useState("");
     const [num2, setNum2] = useState("");
@@ -24,6 +40,8 @@ export default function Game() {
 
     // Check Firestore for existing results when the component mounts
     useEffect(() => {
+        if (!auth || !db) return;
+
         const checkIfAlreadyPlayed = async () => {
             const user = auth.currentUser;
             if (user) {
@@ -36,7 +54,24 @@ export default function Game() {
         };
 
         checkIfAlreadyPlayed();
-    }, []);
+    }, [auth, db]);
+
+    if (!ready) return null;
+
+    if (authUnavailable) {
+        return (
+            <div className="min-h-screen flex items-center justify-center p-6">
+                <div className="max-w-md text-center space-y-4">
+                    <h1 className="text-2xl font-semibold">Game</h1>
+                    <p className="text-slate-600">
+                        Firebase isn’t configured. Add environment variables and redeploy to enable gameplay.
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!auth || !db) return null;
 
     const handleStartGame = async () => {
         const user = auth.currentUser;

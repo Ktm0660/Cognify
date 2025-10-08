@@ -1,23 +1,60 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import {
   signInWithPopup,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  type Auth,
+  type GoogleAuthProvider,
 } from "firebase/auth";
-import { auth, googleProvider } from "@/firebase";
+import { getFirebaseAuth, getFirebaseProvider } from "@/lib/firebase.client";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 
 export default function LoginPage() {
   const router = useRouter();
+  const [authReady, setAuthReady] = useState(false);
+  const [authMissing, setAuthMissing] = useState(false);
+  const [auth, setAuth] = useState<Auth | null>(null);
+  const [googleProvider, setGoogleProvider] = useState<GoogleAuthProvider | null>(null);
+  useEffect(() => {
+    const authInstance = getFirebaseAuth();
+    const providerInstance = getFirebaseProvider();
+    if (!authInstance || !providerInstance) {
+      setAuthMissing(true);
+    } else {
+      setAuth(authInstance);
+      setGoogleProvider(providerInstance);
+    }
+    setAuthReady(true);
+  }, []);
+
   const [email, setEmail] = useState("");
   const [pw, setPw] = useState("");
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [err, setErr] = useState<string | null>(null);
 
+  if (!authReady) return null;
+
+  if (authMissing) {
+    return (
+      <div className="min-h-screen grid place-items-center p-6">
+        <div className="max-w-md text-center space-y-3">
+          <h1 className="text-2xl font-semibold">Login</h1>
+          <p className="text-slate-600">
+            Firebase env vars are not set. Add them in Vercel & redeploy to enable login.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!auth || !googleProvider) return null;
+
+
   async function withGoogle() {
     setErr(null);
+    if (!auth || !googleProvider) return;
     try {
       await signInWithPopup(auth, googleProvider);
       router.push("/assess/mini");
@@ -28,6 +65,7 @@ export default function LoginPage() {
   async function withEmail(event: React.FormEvent) {
     event.preventDefault();
     setErr(null);
+    if (!auth) return;
     try {
       if (mode === "login") await signInWithEmailAndPassword(auth, email, pw);
       else await createUserWithEmailAndPassword(auth, email, pw);
