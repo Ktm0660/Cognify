@@ -2,6 +2,9 @@
   "name": "gametheory",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=18.17.0"
+  },
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -9,23 +12,25 @@
     "@testing-library/user-event": "^13.5.0",
     "firebase": "^11.4.0",
     "framer-motion": "^12.7.4",
-    "next": "^14.2.15",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "next": "14.2.33",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "string-similarity": "^4.0.4",
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.1",
-    "@types/react": "^19.0.8",
-    "@types/react-dom": "^19.0.3",
+    "@types/react": "18.2.48",
+    "@types/react-dom": "18.2.18",
     "typescript": "^5.7.3"
   },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint",
+    "prepare": "next lint"
   },
   "eslintConfig": {
     "extends": [
