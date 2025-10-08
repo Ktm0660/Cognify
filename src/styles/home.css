@@ -1,149 +1,147 @@
 /* Home container setup */
 .home-container {
-    padding: 10px 30px 50px;
-    background: linear-gradient(to bottom right, #f0f8ff, #e3efff);
-    min-height: 100vh;
-    font-family: "Segoe UI", sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(48px, 7vw, 72px);
+  padding: clamp(16px, 4vw, 36px);
+  color: var(--color-text-primary);
+}
+
+.home-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.home-header h1 {
+  font-size: clamp(2.2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.welcome {
+  font-size: clamp(1.05rem, 2.2vw, 1.2rem);
+  color: var(--color-text-muted);
+}
+
+.subtext {
+  font-size: clamp(0.95rem, 2vw, 1.05rem);
+  color: var(--color-text-secondary);
+  max-width: 640px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.section h2 {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--color-text-muted);
+}
+
+.section h2::before {
+  content: "";
+  width: 36px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--gradient-accent);
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.45);
+}
+
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: clamp(20px, 4vw, 32px);
+}
+
+.game-card {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(24px, 5vw, 32px);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  box-shadow: var(--glow-ambient);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: left;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+}
+
+.game-card::after {
+  content: "";
+  position: absolute;
+  inset: auto -40% -70% -40%;
+  height: 180px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.35), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.game-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: var(--glow-strong);
+}
+
+.game-card:hover::after {
+  opacity: 1;
+}
+
+.game-card h3 {
+  font-size: 1.3rem;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.game-card p {
+  color: var(--color-text-secondary);
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+
+.game-icon {
+  font-size: 2rem;
+  color: #facc15;
+}
+
+.game-grid.vs-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.badge-accent {
+  align-self: flex-start;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.14);
+  color: var(--color-text-muted);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+}
+
+@media (max-width: 600px) {
+  .home-container {
+    padding: 16px;
   }
-  
-  /* Page header */
-  .home-header {
-    text-align: center;
-    margin-bottom: 50px;
-  }
-  
-  .home-header h1 {
-    font-size: 2.8rem;
-    color: #007bff;
-    margin-bottom: 10px;
-  }
-  
-  .welcome {
-    font-size: 1.2rem;
-    color: #333;
-  }
-  
-  .subtext {
-    font-size: 1rem;
-    color: #555;
-  }
-  
-  /* Section Titles */
-  .section {
-    margin-top: 50px;
-  }
-  
-  .section h2 {
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-    color: #003366;
-  }
-  
-  /* Game Grid */
-  .game-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 30px;
-    padding: 0 10px;
-  }
-  
-  /* Game Cards */
+
   .game-card {
-    background: #ffffff;
-    border-radius: 15px;
-    padding: 25px 20px;
-    box-shadow: 0 8px 20px rgba(0, 123, 255, 0.1);
-    transition: all 0.25s ease-in-out;
-    cursor: pointer;
-    text-align: left;
-    border-left: 6px solid #007bff;
+    padding: 22px;
   }
-  
-  .game-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 30px rgba(0, 123, 255, 0.2);
-    background-color: #f8fbff;
-  }
-  
-  .game-card h3 {
-    font-size: 1.25rem;
-    margin-bottom: 10px;
-    color: #007bff;
-   }
-  
-  .game-card p {
-    color: #444;
-    font-size: 0.95rem;
-  }
-  
-  /* Responsive tweaks */
-  @media (max-width: 600px) {
-    .home-header h1 {
-      font-size: 2.2rem;
-    }
-  
-    .section h2 {
-      font-size: 1.4rem;
-    }
-  
-    .game-card h3 {
-      font-size: 1.1rem;
-    }
-  
-    .game-card p {
-      font-size: 0.85rem;
-    }
-  }
-
-/* SECTION COLOR THEMES */
-.section.solo h2 {
-    color: #ff5e5e;
-  }
-  
-  .section.vs-computer h2 {
-    color: #ff9800;
-  }
-  
-  .section.education h2 {
-    color: #4caf50;
-  }
-  
-  .section.data h2 {
-    color: #673ab7;
-  }
-  
-  .section.solo .game-card {
-    border-left-color: #ff5e5e;
-  }
-  
-  .section.vs-computer .game-card {
-    border-left-color: #ff9800;
-  }
-  
-  .section.education .game-card {
-    border-left-color: #4caf50;
-  }
-  
-  .section.data .game-card {
-    border-left-color: #673ab7;
-  }
-    
-  .game-icon {
-    font-size: 2rem;
-    margin-bottom: 10px;
-  }
-
-  .game-grid.vs-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    padding: 0 10px;
-    max-width: 720px;
-    margin: 0 auto;
-  }
-
-  .game-grid.vs-grid .game-card {
-    width: 100%;
-  }
-
-  
+}
