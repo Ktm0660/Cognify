@@ -9,6 +9,6 @@ test('renders without crashing', async () => {
   expect(screen.getByText(/loading/i)).toBeInTheDocument();
 
   await waitFor(() => {
-    expect(screen.getByText(/login/i)).toBeInTheDocument();
+    expect(screen.getByText(/log in/i)).toBeInTheDocument();
   });
 });

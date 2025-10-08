@@ -1,38 +1,58 @@
 /* Container to center the form */
 .getinfo-container {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 20px; /* adjust for header height */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(24px, 6vw, 48px);
+}
+
+.getinfo-form {
+  background: var(--color-surface);
+  padding: clamp(28px, 5vw, 48px);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glow-ambient);
+  max-width: 680px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  border: 1px solid var(--color-border);
+}
+
+.getinfo-form h2 {
+  font-size: clamp(1.6rem, 3vw, 2rem);
+  margin-bottom: 4px;
+  text-align: center;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.getinfo-error {
+  color: #fda4af;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+  text-align: center;
+  background: rgba(248, 113, 113, 0.14);
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+}
+
+.getinfo-form label {
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.getinfo-submit {
+  margin-top: 12px;
+  align-self: center;
+  border-radius: 999px;
+  padding-inline: 36px;
+}
+
+@media (max-width: 640px) {
+  .getinfo-container {
+    padding: 24px 12px;
   }
-  
-  /* Main form wrapper */
-  .getinfo-form {
-    background-color: white;
-    padding: 30px 40px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    box-sizing: border-box;
-  }
-  
-  /* Heading */
-  .getinfo-form h2 {
-    font-size: 24px;
-    margin-bottom: 10px;
-    text-align: center;
-    color: #007bff;
-  }
-  
-  /* Error message */
-  .getinfo-error {
-    color: red;
-    font-size: 14px;
-    margin-bottom: 10px;
-    text-align: center;
-  }
+}
   
