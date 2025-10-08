@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { auth } from "../firebase";
 import { db } from "../firebase";
 import { doc, setDoc } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/router";
 import { onAuthStateChanged } from "firebase/auth";
 import "../styles/styles.css";
 
@@ -25,18 +25,18 @@ function GetInfo() {
   const [gameTheoryFamiliarity, setGameTheoryFamiliarity] = useState("");
   const [error, setError] = useState("");
 
-  const navigate = useNavigate();
+  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
       } else {
-        navigate("/login");
+        router.push("/login");
       }
     });
     return () => unsubscribe();
-  }, [navigate]);
+  }, [router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -66,7 +66,7 @@ function GetInfo() {
         completedStarterInfo: true,
       }, { merge: true });
 
-      navigate("/");
+      router.push("/");
       window.location.reload(); // ✅ Forces App.js to re-check starter info and route properly
       
     } catch (err) {

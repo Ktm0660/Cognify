@@ -1,4 +1,3 @@
-// @ts-nocheck
 export type Trait =
   | "exploration"
   | "logic"
@@ -14,16 +13,16 @@ const STORAGE_KEY = "cognify.assessment.latest";
 
 export function saveAssessment(scores: TraitScores) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      scores,
-      savedAt: new Date().toISOString(),
-    }));
-  } catch (e) {
-    // no-op
-  }
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ scores, savedAt: new Date().toISOString() })
+    );
+  } catch {}
 }
 
-export function loadAssessment(): { scores: TraitScores; savedAt: string } | null {
+export function loadAssessment():
+  | { scores: TraitScores; savedAt: string }
+  | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;

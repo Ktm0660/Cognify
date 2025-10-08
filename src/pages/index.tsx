@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 /* ---------------- DATA ---------------- */
 const TRAITS = [
@@ -19,8 +18,7 @@ const GAMES = [
   { id: "towers", name: "Towers", tagline: "Plan, adapt, and outthink.", traits: ["logic", "adaptability", "creativity"] },
 ];
 
-/* ---------------- PAGE ---------------- */
-export default function Home() {
+export default function HomePage() {
   const howRef = useRef<HTMLDivElement | null>(null);
   const scrollToHow = () => howRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
@@ -40,10 +38,10 @@ export default function Home() {
 }
 
 /* ---------------- UI PRIMITIVES ---------------- */
-function PrimaryLinkButton({ to, children, ariaLabel }: { to: string; children: React.ReactNode; ariaLabel?: string }) {
+function PrimaryLinkButton({ href, children, ariaLabel }: { href: string; children: React.ReactNode; ariaLabel?: string }) {
   return (
     <Link
-      to={to}
+      href={href}
       aria-label={ariaLabel}
       className="inline-flex items-center justify-center rounded-md bg-indigo-600 px-5 py-3 text-white font-semibold shadow-sm hover:bg-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 transition"
     >
@@ -51,16 +49,7 @@ function PrimaryLinkButton({ to, children, ariaLabel }: { to: string; children: 
     </Link>
   );
 }
-
-function SecondaryButton({
-  children,
-  onClick,
-  ariaLabel,
-}: {
-  children: React.ReactNode;
-  onClick?: () => void;
-  ariaLabel?: string;
-}) {
+function SecondaryButton({ children, onClick, ariaLabel }: { children: React.ReactNode; onClick?: () => void; ariaLabel?: string }) {
   return (
     <button
       onClick={onClick}
@@ -71,16 +60,9 @@ function SecondaryButton({
     </button>
   );
 }
-
-function TraitPill({ label, active = false }: { label: string; active?: boolean }) {
+function TraitPill({ label }: { label: string }) {
   return (
-    <span
-      className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium mr-2 mb-2 border transition ${
-        active
-          ? "bg-indigo-50 text-indigo-700 border-indigo-300"
-          : "bg-white text-slate-700 border-slate-300 hover:border-indigo-300"
-      }`}
-    >
+    <span className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium mr-2 mb-2 border bg-white text-slate-700 border-slate-300">
       {label}
     </span>
   );
@@ -90,41 +72,23 @@ function TraitPill({ label, active = false }: { label: string; active?: boolean 
 function Hero({ onHowClick }: { onHowClick: () => void }) {
   return (
     <section className="relative overflow-hidden">
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100 via-white to-white"
-        aria-hidden="true"
-      />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100 via-white to-white" aria-hidden="true" />
       <div className="relative mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-20">
         <header className="text-center">
           <div className="mx-auto inline-block rounded-full border border-indigo-200 bg-indigo-50 px-4 py-1 text-xs font-semibold text-indigo-700 mb-6">
             Cognify
           </div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900">
-            Play Smarter. Think Deeper.
-          </h1>
+          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900">Play Smarter. Think Deeper.</h1>
           <p className="mt-4 max-w-2xl mx-auto text-lg text-slate-600">
             Challenge your mind with games that reveal how you think. Measure your skills. Train your brain. Watch yourself grow.
           </p>
           <div className="mt-8 flex items-center justify-center gap-4 flex-wrap">
-            {/* Your existing “Play Now” can go to /app or similar */}
-            <PrimaryLinkButton to="/assess/mini" ariaLabel="Take the Assessment">
-              Take the 3-Minute Assessment
-            </PrimaryLinkButton>
-            <button
-              aria-label="How It Works"
-              onClick={onHowClick}
-              className="inline-flex items-center justify-center rounded-md border border-slate-300 px-5 py-3 text-slate-700 font-semibold hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 transition"
-            >
-              How It Works
-            </button>
+            <PrimaryLinkButton href="/assess/mini" ariaLabel="Take the assessment">Take the 3-Minute Assessment</PrimaryLinkButton>
+            <SecondaryButton ariaLabel="How It Works" onClick={onHowClick}>How It Works</SecondaryButton>
           </div>
         </header>
-
-        {/* subtle floating trait pills */}
         <div className="mt-14 flex justify-center flex-wrap gap-3 opacity-80">
-          {TRAITS.slice(0, 5).map((t) => (
-            <TraitPill key={t.id} label={t.label} />
-          ))}
+          {TRAITS.slice(0, 5).map((t) => <TraitPill key={t.id} label={t.label} />)}
         </div>
       </div>
     </section>
@@ -163,18 +127,14 @@ function RadarSvg({ values }: { values: number[] }) {
   const points = values.map((v, i) => {
     const angle = (Math.PI * 2 * i) / values.length - Math.PI / 2;
     const r = R * (0.2 + 0.8 * v);
-    const x = cx + r * Math.cos(angle);
-    const y = cy + r * Math.sin(angle);
-    return `${x},${y}`;
+    return `${cx + r * Math.cos(angle)},${cy + r * Math.sin(angle)}`;
   });
   return (
     <svg width="200" height="200" role="img" aria-label="Thinking Profile Radar">
       {[0.4, 0.6, 0.8, 1].map((g, i) => <circle key={i} cx={cx} cy={cy} r={R * g} fill="none" stroke="#e2e8f0" strokeDasharray="4 4" />)}
       {new Array(values.length).fill(0).map((_, i) => {
         const angle = (Math.PI * 2 * i) / values.length - Math.PI / 2;
-        const x2 = cx + R * Math.cos(angle);
-        const y2 = cy + R * Math.sin(angle);
-        return <line key={i} x1={cx} y1={cy} x2={x2} y2={y2} stroke="#e2e8f0" />;
+        return <line key={i} x1={cx} y1={cy} x2={cx + R * Math.cos(angle)} y2={cy + R * Math.sin(angle)} stroke="#e2e8f0" />;
       })}
       <polygon points={points.join(" ")} fill="#6366F170" stroke="#6366F1" strokeWidth="2" />
     </svg>
@@ -219,7 +179,7 @@ function SevenTraits() {
               <h3 className="text-lg font-semibold">{activeTrait.label}</h3>
               <p className="mt-2 text-slate-600">{activeTrait.blurb}</p>
               <div className="mt-4">
-                <PrimaryLinkButton to="/assess/mini" ariaLabel="Take 3-minute test">
+                <PrimaryLinkButton href="/assess/mini" ariaLabel="Take 3-minute test">
                   Take the 3-Minute Thinking Test
                 </PrimaryLinkButton>
               </div>
@@ -254,7 +214,7 @@ function GamesShowcase() {
                 })}
               </div>
               <div className="mt-4">
-                <Link to="/assess/mini" className="inline-flex items-center justify-center rounded-md border border-slate-300 px-5 py-3 text-slate-700 font-semibold hover:bg-slate-50 transition">
+                <Link href="/assess/mini" className="inline-flex items-center justify-center rounded-md border border-slate-300 px-5 py-3 text-slate-700 font-semibold hover:bg-slate-50 transition">
                   Play Demo
                 </Link>
               </div>
@@ -296,7 +256,7 @@ function GrowthSection() {
               ))}
             </div>
             <div className="mt-6">
-              <Link to="/assess/mini" className="inline-flex items-center justify-center rounded-md border border-slate-300 px-5 py-3 text-slate-700 font-semibold hover:bg-slate-50 transition">
+              <Link href="/assess/mini" className="inline-flex items-center justify-center rounded-md border border-slate-300 px-5 py-3 text-slate-700 font-semibold hover:bg-slate-50 transition">
                 View Full Dashboard
               </Link>
             </div>
@@ -309,7 +269,7 @@ function GrowthSection() {
               Personalized missions target your weakest traits so progress always feels within reach.
             </p>
             <div className="mt-5 flex gap-3">
-              <Link to="/assess/mini" className="inline-flex items-center justify-center rounded-md bg-indigo-600 px-5 py-3 text-white font-semibold shadow-sm hover:bg-indigo-500 transition">
+              <Link href="/assess/mini" className="inline-flex items-center justify-center rounded-md bg-indigo-600 px-5 py-3 text-white font-semibold shadow-sm hover:bg-indigo-500 transition">
                 Start Your Journey
               </Link>
               <a href="#traits-heading" className="inline-flex items-center justify-center rounded-md border border-slate-300 px-5 py-3 text-slate-700 font-semibold hover:bg-slate-50 transition">
@@ -369,12 +329,8 @@ function ClosingCta() {
           Compete with friends, track your growth, and see how far your mind can go.
         </p>
         <div className="mt-8 flex items-center justify-center gap-4">
-          <PrimaryLinkButton to="/assess/mini" ariaLabel="Play now">Play Now</PrimaryLinkButton>
-          <a
-            aria-label="Learn more"
-            href="#traits-heading"
-            className="inline-flex items-center justify-center rounded-md bg-white/10 px-5 py-3 text-white font-semibold ring-1 ring-white/30 hover:bg-white/20 transition"
-          >
+          <PrimaryLinkButton href="/assess/mini" ariaLabel="Play now">Play Now</PrimaryLinkButton>
+          <a aria-label="Learn more" href="#traits-heading" className="inline-flex items-center justify-center rounded-md bg-white/10 px-5 py-3 text-white font-semibold ring-1 ring-white/30 hover:bg-white/20 transition">
             Learn More
           </a>
         </div>
