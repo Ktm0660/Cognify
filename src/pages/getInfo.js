@@ -4,7 +4,6 @@ import { db } from "../firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { onAuthStateChanged } from "firebase/auth";
-import "../styles/styles.css";
 
 function GetInfo() {
   const [user, setUser] = useState(null);
