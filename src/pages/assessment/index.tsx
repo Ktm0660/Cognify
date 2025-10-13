@@ -9,12 +9,7 @@ import ConfidenceSlider from "@/components/ConfidenceSlider";
 import { useItemTimer } from "@/components/useItemTimer";
 import { cn } from "@/lib/cn";
 import { QUESTIONS } from "@/data/questions";
-import { auth, db } from "@/firebase";
-import { readEnv } from "@/lib/readEnv";
-
-const REQUIRED_FIREBASE_ENV_KEYS = ["API_KEY", "AUTH_DOMAIN", "PROJECT_ID", "APP_ID"] as const;
-
-const isFirebaseConfigured = REQUIRED_FIREBASE_ENV_KEYS.every((key) => Boolean(readEnv(key)));
+import { auth, db, isConfigured } from "../../firebase";
 
 const missingFirebaseMessage = "Firebase isn’t configured. Add environment variables to enable the assessment.";
 
@@ -24,7 +19,7 @@ export default function AssessmentPage() {
   const router = useRouter();
   const [userId, setUserId] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const firebaseMissing = !isFirebaseConfigured;
+  const firebaseMissing = !isConfigured();
   const [authChecked, setAuthChecked] = useState(firebaseMissing);
   const [error, setError] = useState<string | null>(firebaseMissing ? missingFirebaseMessage : null);
   const [currentIndex, setCurrentIndex] = useState(0);

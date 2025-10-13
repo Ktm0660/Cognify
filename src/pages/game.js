@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import stringSimilarity from "string-similarity";
-import { auth as firebaseAuth, db as firebaseDb } from "@/firebase";
+import { auth as firebaseAuth, db as firebaseDb } from "../firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
 export default function Game() {
