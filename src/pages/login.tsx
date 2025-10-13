@@ -7,7 +7,7 @@ import {
   type Auth,
   type GoogleAuthProvider,
 } from "firebase/auth";
-import { getFirebaseAuth, getFirebaseProvider } from "@/lib/firebase.client";
+import { auth as firebaseAuth, googleProvider as firebaseGoogleProvider } from "@/firebase";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 
@@ -18,8 +18,8 @@ export default function LoginPage() {
   const [auth, setAuth] = useState<Auth | null>(null);
   const [googleProvider, setGoogleProvider] = useState<GoogleAuthProvider | null>(null);
   useEffect(() => {
-    const authInstance = getFirebaseAuth();
-    const providerInstance = getFirebaseProvider();
+    const authInstance = firebaseAuth;
+    const providerInstance = firebaseGoogleProvider;
     if (!authInstance || !providerInstance) {
       setAuthMissing(true);
     } else {
@@ -57,7 +57,7 @@ export default function LoginPage() {
     if (!auth || !googleProvider) return;
     try {
       await signInWithPopup(auth, googleProvider);
-      router.push("/assess/mini");
+      router.push("/assessment");
     } catch (error: any) {
       setErr(error?.message ?? "Sign-in failed");
     }
@@ -69,7 +69,7 @@ export default function LoginPage() {
     try {
       if (mode === "login") await signInWithEmailAndPassword(auth, email, pw);
       else await createUserWithEmailAndPassword(auth, email, pw);
-      router.push("/assess/mini");
+      router.push("/assessment");
     } catch (error: any) {
       setErr(error?.message ?? "Auth failed");
     }
