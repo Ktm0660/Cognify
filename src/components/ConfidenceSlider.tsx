@@ -10,7 +10,7 @@ export default function ConfidenceSlider({ value, onChange }: ConfidenceSliderPr
     <div className="space-y-2">
       <div className="flex items-center justify-between text-sm">
         <span className="font-medium text-slate-700">How confident are you?</span>
-        <span className="font-semibold text-slate-900">{value}</span>
+        <span className="font-semibold text-slate-900">{value}%</span>
       </div>
       <input
         type="range"
@@ -18,6 +18,7 @@ export default function ConfidenceSlider({ value, onChange }: ConfidenceSliderPr
         max={100}
         value={value}
         onChange={(event) => onChange(Number(event.target.value))}
+        aria-label="Confidence level"
         className="w-full accent-indigo-500"
       />
       <div className="flex justify-between text-xs text-slate-500">
