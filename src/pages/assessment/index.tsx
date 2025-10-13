@@ -9,7 +9,21 @@ import ConfidenceSlider from "@/components/ConfidenceSlider";
 import { useItemTimer } from "@/components/useItemTimer";
 import { cn } from "@/lib/cn";
 import { QUESTIONS } from "@/data/questions";
-import { auth, db } from "@/firebase";
+import { auth, db, env as firebaseEnv } from "@/firebase";
+
+const REQUIRED_FIREBASE_ENV_KEYS = [
+  "FIREBASE_API_KEY",
+  "FIREBASE_AUTH_DOMAIN",
+  "FIREBASE_PROJECT_ID",
+  "FIREBASE_APP_ID",
+] as const;
+
+const hasFirebaseEnv = REQUIRED_FIREBASE_ENV_KEYS.every((key) => {
+  const value = firebaseEnv(key);
+  return typeof value === "string" && value.length > 0;
+});
+
+const missingFirebaseMessage = "Firebase isn’t configured. Add environment variables to enable the assessment.";
 
 const TOTAL_QUESTIONS = QUESTIONS.length;
 
@@ -17,8 +31,9 @@ export default function AssessmentPage() {
   const router = useRouter();
   const [userId, setUserId] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [authChecked, setAuthChecked] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const firebaseMissing = !hasFirebaseEnv;
+  const [authChecked, setAuthChecked] = useState(firebaseMissing);
+  const [error, setError] = useState<string | null>(firebaseMissing ? missingFirebaseMessage : null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [confidence, setConfidence] = useState(50);
@@ -27,8 +42,12 @@ export default function AssessmentPage() {
   const { elapsedMs, reset, startedAt } = useItemTimer();
 
   useEffect(() => {
+    if (firebaseMissing) {
+      return;
+    }
+
     if (!auth) {
-      setError((prev) => prev ?? "Firebase isn’t configured. Add environment variables to enable the assessment.");
+      setError((prev) => prev ?? missingFirebaseMessage);
       setAuthChecked(true);
       return;
     }
@@ -43,11 +62,15 @@ export default function AssessmentPage() {
     });
 
     return () => unsubscribe();
-  }, [auth, router]);
+  }, [auth, firebaseMissing, router]);
 
   useEffect(() => {
+    if (firebaseMissing) {
+      return;
+    }
+
     if (!db) {
-      setError((prev) => prev ?? "Firebase isn’t configured. Add environment variables to enable the assessment.");
+      setError((prev) => prev ?? missingFirebaseMessage);
       return;
     }
     if (!userId || sessionId) return;
@@ -66,7 +89,7 @@ export default function AssessmentPage() {
         setError("We couldn’t start the assessment. Please try again later.");
       }
     })();
-  }, [db, sessionId, userId]);
+  }, [db, firebaseMissing, sessionId, userId]);
 
   useEffect(() => {
     reset();
@@ -90,7 +113,7 @@ export default function AssessmentPage() {
       submitting
     ) {
       if (!db) {
-        setError((prev) => prev ?? "Firebase isn’t configured. Add environment variables to enable the assessment.");
+        setError((prev) => prev ?? missingFirebaseMessage);
       }
       return;
     }
