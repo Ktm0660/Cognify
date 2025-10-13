@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { auth } from "../firebase";
-import { db } from "../firebase";
+import { auth, db } from "../firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { onAuthStateChanged } from "firebase/auth";
