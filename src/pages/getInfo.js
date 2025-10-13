@@ -27,6 +27,11 @@ function GetInfo() {
   const router = useRouter();
 
   useEffect(() => {
+    if (!auth) {
+      setError("Firebase isn’t configured. Add environment variables to enable this page.");
+      return () => {};
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
@@ -35,12 +40,17 @@ function GetInfo() {
       }
     });
     return () => unsubscribe();
-  }, [router]);
+  }, [auth, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name || !age || !gender || !city || !state) {
       setError("Please fill out all required fields.");
+      return;
+    }
+
+    if (!db || !user) {
+      setError("Firebase isn’t configured. Try again later.");
       return;
     }
 

@@ -35,8 +35,8 @@ export default function HomePage() {
               Challenge your mind with games that reveal how you think. Measure your skills. Train your brain. Watch yourself grow.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-              <Link href="/assess/mini">
-                <Button variant="gradient">Take the 3-Minute Assessment</Button>
+              <Link href="/assessment">
+                <Button variant="gradient">Take the Assessment</Button>
               </Link>
               <Button variant="secondary" onClick={() => howRef.current?.scrollIntoView({ behavior: "smooth" })}>
                 How It Works

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import stringSimilarity from "string-similarity";
-import { getFirebaseAuth, getFirebaseDb } from "@/lib/firebase.client";
+import { auth as firebaseAuth, db as firebaseDb } from "@/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
 export default function Game() {
@@ -9,8 +9,8 @@ export default function Game() {
     const [auth, setAuth] = useState(null);
     const [db, setDb] = useState(null);
     useEffect(() => {
-        const authInstance = getFirebaseAuth();
-        const dbInstance = getFirebaseDb();
+        const authInstance = firebaseAuth;
+        const dbInstance = firebaseDb;
         if (!authInstance || !dbInstance) {
             setAuthUnavailable(true);
         } else {
