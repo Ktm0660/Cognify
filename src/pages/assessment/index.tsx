@@ -9,19 +9,12 @@ import ConfidenceSlider from "@/components/ConfidenceSlider";
 import { useItemTimer } from "@/components/useItemTimer";
 import { cn } from "@/lib/cn";
 import { QUESTIONS } from "@/data/questions";
-import { auth, db, env as firebaseEnv } from "@/firebase";
+import { auth, db } from "@/firebase";
+import { readEnv } from "@/lib/readEnv";
 
-const REQUIRED_FIREBASE_ENV_KEYS = [
-  "FIREBASE_API_KEY",
-  "FIREBASE_AUTH_DOMAIN",
-  "FIREBASE_PROJECT_ID",
-  "FIREBASE_APP_ID",
-] as const;
+const REQUIRED_FIREBASE_ENV_KEYS = ["API_KEY", "AUTH_DOMAIN", "PROJECT_ID", "APP_ID"] as const;
 
-const hasFirebaseEnv = REQUIRED_FIREBASE_ENV_KEYS.every((key) => {
-  const value = firebaseEnv(key);
-  return typeof value === "string" && value.length > 0;
-});
+const isFirebaseConfigured = REQUIRED_FIREBASE_ENV_KEYS.every((key) => Boolean(readEnv(key)));
 
 const missingFirebaseMessage = "Firebase isn’t configured. Add environment variables to enable the assessment.";
 
@@ -31,7 +24,7 @@ export default function AssessmentPage() {
   const router = useRouter();
   const [userId, setUserId] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const firebaseMissing = !hasFirebaseEnv;
+  const firebaseMissing = !isFirebaseConfigured;
   const [authChecked, setAuthChecked] = useState(firebaseMissing);
   const [error, setError] = useState<string | null>(firebaseMissing ? missingFirebaseMessage : null);
   const [currentIndex, setCurrentIndex] = useState(0);
