@@ -1,7 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
-import { onAuthStateChanged } from "firebase/auth";
-import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { onAuthStateChanged, type Auth } from "firebase/auth";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  updateDoc,
+  type Firestore,
+} from "firebase/firestore";
 
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
@@ -9,7 +16,12 @@ import ConfidenceSlider from "@/components/ConfidenceSlider";
 import { useItemTimer } from "@/components/useItemTimer";
 import { cn } from "@/lib/cn";
 import { QUESTIONS } from "@/data/questions";
-import { auth, db, isConfigured } from "../../firebase";
+import {
+  getAuthSafe,
+  getDbSafe,
+  getFirebaseApp,
+  readEnv,
+} from "../../firebase";
 
 const missingFirebaseMessage = "Firebase isn’t configured. Add environment variables to enable the assessment.";
 
@@ -19,28 +31,67 @@ export default function AssessmentPage() {
   const router = useRouter();
   const [userId, setUserId] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const firebaseMissing = !isConfigured();
-  const [authChecked, setAuthChecked] = useState(firebaseMissing);
-  const [error, setError] = useState<string | null>(firebaseMissing ? missingFirebaseMessage : null);
+  const [firebaseReady, setFirebaseReady] = useState<boolean | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [authInstance, setAuthInstance] = useState<Auth | null>(null);
+  const [dbInstance, setDbInstance] = useState<Firestore | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [confidence, setConfidence] = useState(50);
   const [submitting, setSubmitting] = useState(false);
 
   const { elapsedMs, reset, startedAt } = useItemTimer();
+  const firebaseEnvStatus = useMemo(
+    () =>
+      [
+        "FIREBASE_API_KEY",
+        "FIREBASE_AUTH_DOMAIN",
+        "FIREBASE_PROJECT_ID",
+        "FIREBASE_APP_ID",
+      ].map((key) => ({
+        key,
+        present: Boolean(readEnv(key)),
+      })),
+    []
+  );
 
   useEffect(() => {
-    if (firebaseMissing) {
+    let cancelled = false;
+
+    try {
+      const app = getFirebaseApp();
+      if (!app) {
+        throw new Error("Firebase app not available");
+      }
+      const auth = getAuthSafe();
+      const database = getDbSafe();
+      if (!cancelled) {
+        setAuthInstance(auth);
+        setDbInstance(database);
+        setFirebaseReady(true);
+        setError(null);
+      }
+    } catch (err) {
+      console.error(err);
+      if (!cancelled) {
+        setFirebaseReady(false);
+        setError((prev) => prev ?? missingFirebaseMessage);
+        setAuthChecked(true);
+      }
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!authInstance) {
       return;
     }
 
-    if (!auth) {
-      setError((prev) => prev ?? missingFirebaseMessage);
-      setAuthChecked(true);
-      return;
-    }
-
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+    const unsubscribe = onAuthStateChanged(authInstance, (firebaseUser) => {
       if (!firebaseUser) {
         router.replace("/login");
       } else {
@@ -50,14 +101,14 @@ export default function AssessmentPage() {
     });
 
     return () => unsubscribe();
-  }, [auth, firebaseMissing, router]);
+  }, [authInstance, router]);
 
   useEffect(() => {
-    if (firebaseMissing) {
+    if (firebaseReady === false) {
       return;
     }
 
-    if (!db) {
+    if (!dbInstance) {
       setError((prev) => prev ?? missingFirebaseMessage);
       return;
     }
@@ -65,7 +116,7 @@ export default function AssessmentPage() {
 
     (async () => {
       try {
-        const sessionRef = await addDoc(collection(db, "sessions"), {
+        const sessionRef = await addDoc(collection(dbInstance, "sessions"), {
           userId,
           startedAt: serverTimestamp(),
           version: "v0.1",
@@ -77,7 +128,7 @@ export default function AssessmentPage() {
         setError("We couldn’t start the assessment. Please try again later.");
       }
     })();
-  }, [db, firebaseMissing, sessionId, userId]);
+  }, [dbInstance, firebaseReady, sessionId, userId]);
 
   useEffect(() => {
     reset();
@@ -97,10 +148,10 @@ export default function AssessmentPage() {
       !currentQuestion ||
       !userId ||
       !sessionId ||
-      !db ||
+      !dbInstance ||
       submitting
     ) {
-      if (!db) {
+      if (!dbInstance) {
         setError((prev) => prev ?? missingFirebaseMessage);
       }
       return;
@@ -112,7 +163,7 @@ export default function AssessmentPage() {
     const rtMs = submittedAt.getTime() - startedAtDate.getTime();
 
     try {
-      await addDoc(collection(db, "responses"), {
+      await addDoc(collection(dbInstance, "responses"), {
         userId,
         sessionId,
         itemId: currentQuestion.itemId,
@@ -129,7 +180,7 @@ export default function AssessmentPage() {
       const isLast = currentIndex === TOTAL_QUESTIONS - 1;
 
       if (isLast) {
-        await updateDoc(doc(db, "sessions", sessionId), {
+        await updateDoc(doc(dbInstance, "sessions", sessionId), {
           completedAt: serverTimestamp(),
         });
         router.push("/assessment/done");
@@ -146,7 +197,7 @@ export default function AssessmentPage() {
     confidence,
     currentIndex,
     currentQuestion,
-    db,
+    dbInstance,
     router,
     selectedOption,
     sessionId,
@@ -166,7 +217,7 @@ export default function AssessmentPage() {
     );
   }
 
-  if (!authChecked || !userId) {
+  if (firebaseReady === null || !authChecked || !userId) {
     return null;
   }
 
@@ -244,6 +295,17 @@ export default function AssessmentPage() {
           </div>
         </Card>
       </div>
+      {process.env.NODE_ENV !== "production" && (
+        <div className="mx-auto max-w-3xl px-4 pb-6 text-center text-xs text-slate-500">
+          <span className="font-medium">Firebase env:</span>{" "}
+          {firebaseEnvStatus.map(({ key, present }, index) => (
+            <span key={key}>
+              {index > 0 && " · "}
+              {present ? "✅" : "❌"} {key.replace("FIREBASE_", "")}
+            </span>
+          ))}
+        </div>
+      )}
     </main>
   );
 }
