@@ -7,7 +7,10 @@ import {
   type Auth,
   type GoogleAuthProvider,
 } from "firebase/auth";
-import { auth as firebaseAuth, googleProvider as firebaseGoogleProvider } from "@/firebase";
+import {
+  auth as firebaseAuth,
+  googleProvider as firebaseGoogleProvider,
+} from "../firebase";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 

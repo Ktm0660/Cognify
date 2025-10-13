@@ -1,6 +1,6 @@
 import React from "react";
 
-import { readEnv } from "@/lib/readEnv";
+import { isConfigured, readEnv } from "../firebase";
 
 const FIREBASE_KEYS = [
   "API_KEY",
@@ -30,15 +30,19 @@ const EnvCheckPage: React.FC = () => {
           <tbody className="divide-y divide-slate-200">
             {FIREBASE_KEYS.map((key) => {
               const envKey = `FIREBASE_${key}`;
-              const isPresent = Boolean(readEnv(key));
+              const present = Boolean(readEnv(envKey));
 
               return (
                 <tr key={key}>
                   <td className="py-3 pr-8 font-mono text-slate-600">{envKey}</td>
-                  <td className="py-3 text-slate-900">{isPresent ? "✅ present" : "❌ missing"}</td>
+                  <td className="py-3 text-slate-900">{present ? "✅" : "❌"}</td>
                 </tr>
               );
             })}
+            <tr>
+              <td className="py-3 pr-8 font-mono text-slate-600">ASSESSMENT READY?</td>
+              <td className="py-3 text-slate-900">{isConfigured() ? "✅" : "❌"}</td>
+            </tr>
           </tbody>
         </table>
       </div>
