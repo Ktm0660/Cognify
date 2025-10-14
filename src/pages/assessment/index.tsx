@@ -1,7 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
-import { onAuthStateChanged } from "firebase/auth";
-import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { onAuthStateChanged, type Auth } from "firebase/auth";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  updateDoc,
+  type Firestore,
+} from "firebase/firestore";
 
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
@@ -9,7 +16,7 @@ import ConfidenceSlider from "@/components/ConfidenceSlider";
 import { useItemTimer } from "@/components/useItemTimer";
 import { cn } from "@/lib/cn";
 import { QUESTIONS } from "@/data/questions";
-import { auth, db, isConfigured } from "../../firebase";
+import { getDbSafe, getAuthSafe, getFirebaseApp } from "../../firebase";
 
 const missingFirebaseMessage = "Firebase isn’t configured. Add environment variables to enable the assessment.";
 
@@ -17,11 +24,13 @@ const TOTAL_QUESTIONS = QUESTIONS.length;
 
 export default function AssessmentPage() {
   const router = useRouter();
+  const [firebaseReady, setFirebaseReady] = useState<boolean | null>(null);
+  const [authInstance, setAuthInstance] = useState<Auth | null>(null);
+  const [dbInstance, setDbInstance] = useState<Firestore | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const firebaseMissing = !isConfigured();
-  const [authChecked, setAuthChecked] = useState(firebaseMissing);
-  const [error, setError] = useState<string | null>(firebaseMissing ? missingFirebaseMessage : null);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [confidence, setConfidence] = useState(50);
@@ -30,17 +39,39 @@ export default function AssessmentPage() {
   const { elapsedMs, reset, startedAt } = useItemTimer();
 
   useEffect(() => {
-    if (firebaseMissing) {
-      return;
-    }
+    let ok = true;
 
-    if (!auth) {
+    try {
+      getFirebaseApp();
+      const authClient = getAuthSafe();
+      const dbClient = getDbSafe();
+
+      setAuthInstance(authClient);
+      setDbInstance(dbClient);
+    } catch (err) {
+      console.error("Firebase failed to initialise for assessment", err);
+      ok = false;
       setError((prev) => prev ?? missingFirebaseMessage);
+      setAuthInstance(null);
+      setDbInstance(null);
+    }
+
+    setFirebaseReady(ok);
+    if (!ok) {
       setAuthChecked(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (firebaseReady === false) {
       return;
     }
 
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+    if (!firebaseReady || !authInstance) {
+      return;
+    }
+
+    const unsubscribe = onAuthStateChanged(authInstance, (firebaseUser) => {
       if (!firebaseUser) {
         router.replace("/login");
       } else {
@@ -50,22 +81,20 @@ export default function AssessmentPage() {
     });
 
     return () => unsubscribe();
-  }, [auth, firebaseMissing, router]);
+  }, [authInstance, firebaseReady, router]);
 
   useEffect(() => {
-    if (firebaseMissing) {
-      return;
-    }
-
-    if (!db) {
-      setError((prev) => prev ?? missingFirebaseMessage);
+    if (!firebaseReady || !dbInstance) {
+      if (firebaseReady === false) {
+        setError((prev) => prev ?? missingFirebaseMessage);
+      }
       return;
     }
     if (!userId || sessionId) return;
 
     (async () => {
       try {
-        const sessionRef = await addDoc(collection(db, "sessions"), {
+        const sessionRef = await addDoc(collection(dbInstance, "sessions"), {
           userId,
           startedAt: serverTimestamp(),
           version: "v0.1",
@@ -77,7 +106,7 @@ export default function AssessmentPage() {
         setError("We couldn’t start the assessment. Please try again later.");
       }
     })();
-  }, [db, firebaseMissing, sessionId, userId]);
+  }, [dbInstance, firebaseReady, sessionId, userId]);
 
   useEffect(() => {
     reset();
@@ -97,10 +126,10 @@ export default function AssessmentPage() {
       !currentQuestion ||
       !userId ||
       !sessionId ||
-      !db ||
+      !dbInstance ||
       submitting
     ) {
-      if (!db) {
+      if (!dbInstance) {
         setError((prev) => prev ?? missingFirebaseMessage);
       }
       return;
@@ -112,7 +141,7 @@ export default function AssessmentPage() {
     const rtMs = submittedAt.getTime() - startedAtDate.getTime();
 
     try {
-      await addDoc(collection(db, "responses"), {
+      await addDoc(collection(dbInstance, "responses"), {
         userId,
         sessionId,
         itemId: currentQuestion.itemId,
@@ -129,7 +158,7 @@ export default function AssessmentPage() {
       const isLast = currentIndex === TOTAL_QUESTIONS - 1;
 
       if (isLast) {
-        await updateDoc(doc(db, "sessions", sessionId), {
+        await updateDoc(doc(dbInstance, "sessions", sessionId), {
           completedAt: serverTimestamp(),
         });
         router.push("/assessment/done");
@@ -146,7 +175,7 @@ export default function AssessmentPage() {
     confidence,
     currentIndex,
     currentQuestion,
-    db,
+    dbInstance,
     router,
     selectedOption,
     sessionId,
@@ -154,6 +183,17 @@ export default function AssessmentPage() {
     submitting,
     userId,
   ]);
+
+  if (firebaseReady === false) {
+    return (
+      <main className="mx-auto flex min-h-[70vh] max-w-xl items-center px-4 py-12">
+        <Card className="w-full p-8">
+          <h1 className="text-2xl font-semibold text-slate-900">Assessment unavailable</h1>
+          <p className="mt-3 text-slate-600">{error ?? missingFirebaseMessage}</p>
+        </Card>
+      </main>
+    );
+  }
 
   if (error) {
     return (
@@ -166,11 +206,11 @@ export default function AssessmentPage() {
     );
   }
 
-  if (!authChecked || !userId) {
+  if (firebaseReady === null || !authChecked || !userId) {
     return null;
   }
 
-  if (!sessionId || !currentQuestion) {
+  if (!dbInstance || !sessionId || !currentQuestion) {
     return (
       <main className="mx-auto flex min-h-[70vh] max-w-xl items-center px-4 py-12">
         <Card className="w-full p-8 text-center">

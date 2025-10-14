@@ -2,15 +2,17 @@ import React from "react";
 
 import { isConfigured, readEnv } from "../firebase";
 
-const FIREBASE_KEYS = [
-  "API_KEY",
-  "AUTH_DOMAIN",
-  "PROJECT_ID",
-  "STORAGE_BUCKET",
-  "MESSAGING_SENDER_ID",
-  "APP_ID",
-  "MEASUREMENT_ID",
-] as const;
+const present = (key: string) => !!readEnv(key);
+
+const keys = [
+  "FIREBASE_API_KEY",
+  "FIREBASE_AUTH_DOMAIN",
+  "FIREBASE_PROJECT_ID",
+  "FIREBASE_STORAGE_BUCKET",
+  "FIREBASE_MESSAGING_SENDER_ID",
+  "FIREBASE_APP_ID",
+  "FIREBASE_MEASUREMENT_ID",
+];
 
 const EnvCheckPage: React.FC = () => {
   return (
@@ -28,19 +30,14 @@ const EnvCheckPage: React.FC = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200">
-            {FIREBASE_KEYS.map((key) => {
-              const envKey = `FIREBASE_${key}`;
-              const present = Boolean(readEnv(envKey));
-
-              return (
-                <tr key={key}>
-                  <td className="py-3 pr-8 font-mono text-slate-600">{envKey}</td>
-                  <td className="py-3 text-slate-900">{present ? "✅" : "❌"}</td>
-                </tr>
-              );
-            })}
+            {keys.map((key) => (
+              <tr key={key}>
+                <td className="py-3 pr-8 font-mono text-slate-600">{key}</td>
+                <td className="py-3 text-slate-900">{present(key) ? "✅" : "❌"}</td>
+              </tr>
+            ))}
             <tr>
-              <td className="py-3 pr-8 font-mono text-slate-600">ASSESSMENT READY?</td>
+              <td className="py-3 pr-8 font-mono text-slate-600">ASSESSMENT READY? -&gt;</td>
               <td className="py-3 text-slate-900">{isConfigured() ? "✅" : "❌"}</td>
             </tr>
           </tbody>
