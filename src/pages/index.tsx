@@ -5,13 +5,36 @@ import Card from "@/components/ui/Card";
 import Pill from "@/components/ui/Pill";
 
 const TRAITS = [
-  { id: "exploration", label: "Exploration", blurb: "Try new ideas and chase curiosity." },
-  { id: "logic", label: "Logic & Reasoning", blurb: "Build conclusions that fit the facts." },
-  { id: "adaptability", label: "Adaptability", blurb: "Change strategy when rules change." },
-  { id: "risk", label: "Risk & Reward", blurb: "Make smart decisions under pressure." },
-  { id: "cooperation", label: "Cooperation", blurb: "Use trust and strategy for win–wins." },
-  { id: "metacognition", label: "Metacognition", blurb: "See how your mind works—then improve it." },
-  { id: "creativity", label: "Creativity", blurb: "Turn imagination into solutions." },
+  {
+    id: "clarity-awareness",
+    label: "Clarity & Awareness",
+    blurb: "Spot assumptions, framing, and bias before they steer you.",
+  },
+  {
+    id: "evidence-evaluation",
+    label: "Evidence & Evaluation",
+    blurb: "Weigh sources, effect sizes, and uncertainty like a pro.",
+  },
+  {
+    id: "logic-reasoning",
+    label: "Logic & Reasoning",
+    blurb: "Build conclusions that actually follow from the facts.",
+  },
+  {
+    id: "decision-problem-solving",
+    label: "Decision & Problem Solving",
+    blurb: "Make trade-offs with expected value and simple rules for action.",
+  },
+  {
+    id: "reflection-adaptation",
+    label: "Reflection & Adaptation",
+    blurb: "Update with feedback, calibrate confidence, improve next time.",
+  },
+  {
+    id: "dispositional-mindset",
+    label: "Dispositional Mindset",
+    blurb: "Practice curiosity, humility, and fair-minded debate.",
+  },
 ];
 
 export default function HomePage() {
@@ -32,7 +55,7 @@ export default function HomePage() {
               </span>
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
-              Challenge your mind with games that reveal how you think. Measure your skills. Train your brain. Watch yourself grow.
+              Challenge your mind with quick games that reveal how you think. Measure six core skills. Train your brain. Watch yourself grow.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
               <Link href="/assessment">
@@ -43,7 +66,7 @@ export default function HomePage() {
               </Button>
             </div>
             <div className="mt-10 flex flex-wrap justify-center gap-3 opacity-90">
-              {TRAITS.slice(0, 5).map((trait) => (
+              {TRAITS.slice(0, 6).map((trait) => (
                 <Pill key={trait.id}>{trait.label}</Pill>
               ))}
             </div>
@@ -57,22 +80,22 @@ export default function HomePage() {
         <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
           <Card>
             <h3 className="font-semibold">🎮 Play</h3>
-            <p className="mt-2 text-slate-600">Fun, fast challenges built on real cognitive science.</p>
+            <p className="mt-2 text-slate-600">Fun, fast challenges grounded in cognitive science.</p>
           </Card>
           <Card>
             <h3 className="font-semibold">🔎 Discover</h3>
-            <p className="mt-2 text-slate-600">See your Thinking Profile grow across seven skills.</p>
+            <p className="mt-2 text-slate-600">See your Thinking Profile across six core skills.</p>
           </Card>
           <Card>
             <h3 className="font-semibold">⚡ Improve</h3>
-            <p className="mt-2 text-slate-600">Get tailored missions to strengthen how you think.</p>
+            <p className="mt-2 text-slate-600">Follow tailored missions to level up how you think.</p>
           </Card>
         </div>
       </section>
 
       <section className="mx-auto max-w-screen-xl px-4 pb-20 sm:px-6 lg:px-8">
-        <h2 className="text-center text-2xl font-bold text-slate-900 sm:text-3xl">The Seven Traits</h2>
-        <p className="mt-2 text-center text-slate-600">Seven skills that make thinking clear, creative, and adaptable.</p>
+        <h2 className="text-center text-2xl font-bold text-slate-900 sm:text-3xl">The Six Core Skills</h2>
+        <p className="mt-2 text-center text-slate-600">Six skills that make thinking clear, accurate, and adaptable.</p>
         <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {TRAITS.map((trait) => (
             <Card key={trait.id} className="hover:border-indigo-200">
@@ -83,7 +106,7 @@ export default function HomePage() {
         </div>
         <div className="mt-10 text-center">
           <Link href="/assess/mini">
-            <Button variant="gradient">Start the Mini Assessment</Button>
+            <Button variant="gradient">Start the Assessment</Button>
           </Link>
         </div>
       </section>
