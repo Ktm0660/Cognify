@@ -1,10 +1,13 @@
+export const dynamic = "force-dynamic";
+
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
-import { onAuthStateChanged, type Auth } from "firebase/auth";
+import { getAuth, onAuthStateChanged, type Auth } from "firebase/auth";
 import {
   addDoc,
   collection,
   doc,
+  getFirestore,
   serverTimestamp,
   updateDoc,
   type Firestore,
@@ -16,15 +19,18 @@ import ConfidenceSlider from "@/components/ConfidenceSlider";
 import { useItemTimer } from "@/components/useItemTimer";
 import { cn } from "@/lib/cn";
 import { QUESTIONS } from "@/data/questions";
-import { getDbSafe, getAuthSafe, getFirebaseApp } from "../../firebase";
+import { getFirebaseApp } from "../../firebase";
 
 const missingFirebaseMessage = "Firebase isn’t configured. Add environment variables to enable the assessment.";
+
+const ASSESSMENT_ENABLED =
+  (process?.env?.NEXT_PUBLIC_ASSESSMENT_ENABLED ?? "true") === "true";
 
 const TOTAL_QUESTIONS = QUESTIONS.length;
 
 export default function AssessmentPage() {
   const router = useRouter();
-  const [firebaseReady, setFirebaseReady] = useState<boolean | null>(null);
+  const [ready, setReady] = useState<boolean | null>(null); // null=loading, true=ok, false=blocked
   const [authInstance, setAuthInstance] = useState<Auth | null>(null);
   const [dbInstance, setDbInstance] = useState<Firestore | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
@@ -39,35 +45,48 @@ export default function AssessmentPage() {
   const { elapsedMs, reset, startedAt } = useItemTimer();
 
   useEffect(() => {
+    if (!ASSESSMENT_ENABLED) {
+      setAuthInstance(null);
+      setDbInstance(null);
+      setError((prev) => prev ?? missingFirebaseMessage);
+      setReady(false);
+      setAuthChecked(true);
+      return;
+    }
+
     let ok = true;
 
     try {
-      getFirebaseApp();
-      const authClient = getAuthSafe();
-      const dbClient = getDbSafe();
+      const app = getFirebaseApp();
+      const authClient = getAuth(app);
+      const dbClient = getFirestore(app);
 
       setAuthInstance(authClient);
       setDbInstance(dbClient);
+      setError(null);
     } catch (err) {
-      console.error("Firebase failed to initialise for assessment", err);
       ok = false;
       setError((prev) => prev ?? missingFirebaseMessage);
       setAuthInstance(null);
       setDbInstance(null);
+      if (typeof window !== "undefined") {
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        console.error("[Assessment] Firebase init failed:", errorMessage);
+      }
     }
 
-    setFirebaseReady(ok);
+    setReady(ok);
     if (!ok) {
       setAuthChecked(true);
     }
   }, []);
 
   useEffect(() => {
-    if (firebaseReady === false) {
+    if (ready === false) {
       return;
     }
 
-    if (!firebaseReady || !authInstance) {
+    if (ready !== true || !authInstance) {
       return;
     }
 
@@ -81,11 +100,11 @@ export default function AssessmentPage() {
     });
 
     return () => unsubscribe();
-  }, [authInstance, firebaseReady, router]);
+  }, [authInstance, ready, router]);
 
   useEffect(() => {
-    if (!firebaseReady || !dbInstance) {
-      if (firebaseReady === false) {
+    if (ready !== true || !dbInstance) {
+      if (ready === false) {
         setError((prev) => prev ?? missingFirebaseMessage);
       }
       return;
@@ -106,7 +125,7 @@ export default function AssessmentPage() {
         setError("We couldn’t start the assessment. Please try again later.");
       }
     })();
-  }, [dbInstance, firebaseReady, sessionId, userId]);
+  }, [dbInstance, ready, sessionId, userId]);
 
   useEffect(() => {
     reset();
@@ -184,12 +203,26 @@ export default function AssessmentPage() {
     userId,
   ]);
 
-  if (firebaseReady === false) {
+  if (!ASSESSMENT_ENABLED) {
     return (
       <main className="mx-auto flex min-h-[70vh] max-w-xl items-center px-4 py-12">
         <Card className="w-full p-8">
           <h1 className="text-2xl font-semibold text-slate-900">Assessment unavailable</h1>
           <p className="mt-3 text-slate-600">{error ?? missingFirebaseMessage}</p>
+        </Card>
+      </main>
+    );
+  }
+
+  if (ready === false) {
+    return (
+      <main className="mx-auto flex min-h-[70vh] max-w-xl items-center px-4 py-12">
+        <Card className="w-full p-8">
+          <h1 className="text-2xl font-semibold text-slate-900">Assessment unavailable</h1>
+          <p className="mt-3 text-slate-600">{error ?? missingFirebaseMessage}</p>
+          {process.env.NODE_ENV !== "production" ? (
+            <p className="mt-3 text-xs text-slate-500">Init failed — open console for details.</p>
+          ) : null}
         </Card>
       </main>
     );
@@ -206,11 +239,11 @@ export default function AssessmentPage() {
     );
   }
 
-  if (firebaseReady === null || !authChecked || !userId) {
+  if (ready === null || !authChecked || !userId) {
     return null;
   }
 
-  if (!dbInstance || !sessionId || !currentQuestion) {
+  if (ready !== true || !dbInstance || !sessionId || !currentQuestion) {
     return (
       <main className="mx-auto flex min-h-[70vh] max-w-xl items-center px-4 py-12">
         <Card className="w-full p-8 text-center">
