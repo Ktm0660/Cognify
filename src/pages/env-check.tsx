@@ -1,12 +1,5 @@
 import * as React from "react";
-import {} from "../firebase";
-
-const readKey = (k: string): string =>
-  (process?.env?.[`NEXT_PUBLIC_${k}`] as string | undefined) ||
-  (process?.env?.[`REACT_APP_${k}`] as string | undefined) ||
-  "";
-
-const present = (k: string): boolean => !!readKey(k);
+import { getFirebaseEnv } from "../firebase";
 
 const KEYS = [
   "FIREBASE_API_KEY",
@@ -16,15 +9,18 @@ const KEYS = [
   "FIREBASE_MESSAGING_SENDER_ID",
   "FIREBASE_APP_ID",
   "FIREBASE_MEASUREMENT_ID",
-];
+] as const satisfies readonly (keyof ReturnType<typeof getFirebaseEnv>)[];
 
 const EnvCheckPage: React.FC = () => {
-  const coreReady = [
+  const env = getFirebaseEnv();
+  const present = (key: (typeof KEYS)[number]): boolean => !!env[key];
+  const coreKeys = [
     "FIREBASE_API_KEY",
     "FIREBASE_AUTH_DOMAIN",
     "FIREBASE_PROJECT_ID",
     "FIREBASE_APP_ID",
-  ].every(present);
+  ] as const;
+  const coreReady = coreKeys.every((key) => present(key));
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-12">
