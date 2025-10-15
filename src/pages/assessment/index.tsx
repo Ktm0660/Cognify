@@ -20,6 +20,7 @@ import { useItemTimer } from "@/components/useItemTimer";
 import { cn } from "@/lib/cn";
 import { QUESTIONS } from "@/data/questions";
 import { diagnoseFirebase, getFirebaseApp, readEnv } from "../../firebase";
+import { scoreSession, type ResponseDoc } from "@/lib/scoring";
 
 const missingFirebaseMessage = "Firebase isn’t configured. Add environment variables to enable the assessment.";
 
@@ -94,6 +95,7 @@ export default function AssessmentPage() {
   const [selectedOption, setSelectedOption] = React.useState<number | null>(null);
   const [confidence, setConfidence] = React.useState(50);
   const [submitting, setSubmitting] = React.useState(false);
+  const [localResponses, setLocalResponses] = React.useState<ResponseDoc[]>([]);
 
   const { elapsedMs, reset, startedAt } = useItemTimer();
 
@@ -181,6 +183,10 @@ export default function AssessmentPage() {
     setConfidence(50);
   }, [currentIndex, reset]);
 
+  React.useEffect(() => {
+    setLocalResponses([]);
+  }, [sessionId]);
+
   const currentQuestion = React.useMemo(
     () => QUESTIONS[currentIndex] ?? null,
     [currentIndex]
@@ -211,6 +217,15 @@ export default function AssessmentPage() {
     const rtMs = submittedAt.getTime() - startedAtDate.getTime();
 
     try {
+      const responseRecord: ResponseDoc = {
+        itemId: currentQuestion.itemId,
+        pillar: currentQuestion.pillar,
+        optionSelected: selectedOption,
+        confidence,
+      };
+
+      const updatedResponses = [...localResponses, responseRecord];
+
       await addDoc(collection(dbInstance, "responses"), {
         userId,
         sessionId,
@@ -225,13 +240,17 @@ export default function AssessmentPage() {
         questionIndex: currentIndex,
       });
 
+      setLocalResponses(updatedResponses);
+
       const isLast = currentIndex === TOTAL_QUESTIONS - 1;
 
       if (isLast) {
+        const summary = scoreSession(updatedResponses);
         await updateDoc(doc(dbInstance, "sessions", sessionId), {
           completedAt: serverTimestamp(),
+          summary,
         });
-        router.push("/assessment/done");
+        router.push(`/assessment/done?sid=${sessionId}`);
       } else {
         setCurrentIndex((prev) => prev + 1);
       }
@@ -246,6 +265,7 @@ export default function AssessmentPage() {
     currentIndex,
     currentQuestion,
     dbInstance,
+    localResponses,
     router,
     selectedOption,
     sessionId,
