@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import * as React from "react";
 import { useRouter } from "next/router";
 import { getAuth, onAuthStateChanged, type Auth } from "firebase/auth";
 import {
@@ -19,42 +19,98 @@ import ConfidenceSlider from "@/components/ConfidenceSlider";
 import { useItemTimer } from "@/components/useItemTimer";
 import { cn } from "@/lib/cn";
 import { QUESTIONS } from "@/data/questions";
-import { getFirebaseApp } from "../../firebase";
+import { diagnoseFirebase, getFirebaseApp, readEnv } from "../../firebase";
 
 const missingFirebaseMessage = "Firebase isn’t configured. Add environment variables to enable the assessment.";
 
 const ASSESSMENT_ENABLED =
   (process?.env?.NEXT_PUBLIC_ASSESSMENT_ENABLED ?? "true") === "true";
 
+type DiagnoseResult = Awaited<ReturnType<typeof diagnoseFirebase>>;
+
+function useFirebaseReady(): {
+  loading: boolean;
+  ok: boolean;
+  diag: DiagnoseResult | null;
+} {
+  const [state, setState] = React.useState<{
+    loading: boolean;
+    ok: boolean;
+    diag: DiagnoseResult | null;
+  }>({ loading: true, ok: false, diag: null });
+
+  React.useEffect(() => {
+    let cancelled = false;
+
+    if (!ASSESSMENT_ENABLED) {
+      const presence = {
+        FIREBASE_API_KEY: !!readEnv("FIREBASE_API_KEY"),
+        FIREBASE_AUTH_DOMAIN: !!readEnv("FIREBASE_AUTH_DOMAIN"),
+        FIREBASE_PROJECT_ID: !!readEnv("FIREBASE_PROJECT_ID"),
+        FIREBASE_APP_ID: !!readEnv("FIREBASE_APP_ID"),
+      } as DiagnoseResult["presence"];
+
+      setState({
+        loading: false,
+        ok: false,
+        diag: {
+          ok: false,
+          errorCode: "disabled",
+          errorMessage:
+            "Assessment disabled via NEXT_PUBLIC_ASSESSMENT_ENABLED = false",
+          presence,
+        },
+      });
+      return;
+    }
+
+    (async () => {
+      const diag = await diagnoseFirebase();
+      if (!cancelled) {
+        setState({ loading: false, ok: diag.ok, diag });
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return state;
+}
+
 const TOTAL_QUESTIONS = QUESTIONS.length;
 
 export default function AssessmentPage() {
   const router = useRouter();
-  const [ready, setReady] = useState<boolean | null>(null); // null=loading, true=ok, false=blocked
-  const [authInstance, setAuthInstance] = useState<Auth | null>(null);
-  const [dbInstance, setDbInstance] = useState<Firestore | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
-  const [sessionId, setSessionId] = useState<string | null>(null);
-  const [authChecked, setAuthChecked] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
-  const [confidence, setConfidence] = useState(50);
-  const [submitting, setSubmitting] = useState(false);
+  const { loading, ok, diag } = useFirebaseReady();
+  const [authInstance, setAuthInstance] = React.useState<Auth | null>(null);
+  const [dbInstance, setDbInstance] = React.useState<Firestore | null>(null);
+  const [userId, setUserId] = React.useState<string | null>(null);
+  const [sessionId, setSessionId] = React.useState<string | null>(null);
+  const [authChecked, setAuthChecked] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [selectedOption, setSelectedOption] = React.useState<number | null>(null);
+  const [confidence, setConfidence] = React.useState(50);
+  const [submitting, setSubmitting] = React.useState(false);
 
   const { elapsedMs, reset, startedAt } = useItemTimer();
 
-  useEffect(() => {
-    if (!ASSESSMENT_ENABLED) {
-      setAuthInstance(null);
-      setDbInstance(null);
-      setError((prev) => prev ?? missingFirebaseMessage);
-      setReady(false);
-      setAuthChecked(true);
+  React.useEffect(() => {
+    if (loading) {
       return;
     }
 
-    let ok = true;
+    if (!ok) {
+      setAuthInstance(null);
+      setDbInstance(null);
+      setUserId(null);
+      setSessionId(null);
+      setError((prev) => prev ?? missingFirebaseMessage);
+      setAuthChecked(true);
+      return;
+    }
 
     try {
       const app = getFirebaseApp();
@@ -64,29 +120,21 @@ export default function AssessmentPage() {
       setAuthInstance(authClient);
       setDbInstance(dbClient);
       setError(null);
+      setAuthChecked(false);
     } catch (err) {
-      ok = false;
+      const errorMessage = err instanceof Error ? err.message : String(err);
       setError((prev) => prev ?? missingFirebaseMessage);
       setAuthInstance(null);
       setDbInstance(null);
+      setAuthChecked(true);
       if (typeof window !== "undefined") {
-        const errorMessage = err instanceof Error ? err.message : String(err);
         console.error("[Assessment] Firebase init failed:", errorMessage);
       }
     }
+  }, [loading, ok]);
 
-    setReady(ok);
-    if (!ok) {
-      setAuthChecked(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (ready === false) {
-      return;
-    }
-
-    if (ready !== true || !authInstance) {
+  React.useEffect(() => {
+    if (loading || !ok || !authInstance) {
       return;
     }
 
@@ -100,11 +148,11 @@ export default function AssessmentPage() {
     });
 
     return () => unsubscribe();
-  }, [authInstance, ready, router]);
+  }, [authInstance, loading, ok, router]);
 
-  useEffect(() => {
-    if (ready !== true || !dbInstance) {
-      if (ready === false) {
+  React.useEffect(() => {
+    if (!ok || !dbInstance) {
+      if (!ok) {
         setError((prev) => prev ?? missingFirebaseMessage);
       }
       return;
@@ -125,21 +173,24 @@ export default function AssessmentPage() {
         setError("We couldn’t start the assessment. Please try again later.");
       }
     })();
-  }, [dbInstance, ready, sessionId, userId]);
+  }, [dbInstance, ok, sessionId, userId]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     reset();
     setSelectedOption(null);
     setConfidence(50);
   }, [currentIndex, reset]);
 
-  const currentQuestion = useMemo(() => QUESTIONS[currentIndex] ?? null, [currentIndex]);
+  const currentQuestion = React.useMemo(
+    () => QUESTIONS[currentIndex] ?? null,
+    [currentIndex]
+  );
 
-  const handleOptionSelect = useCallback((optionIndex: number) => {
+  const handleOptionSelect = React.useCallback((optionIndex: number) => {
     setSelectedOption(optionIndex);
   }, []);
 
-  const handleSubmit = useCallback(async () => {
+  const handleSubmit = React.useCallback(async () => {
     if (
       selectedOption === null ||
       !currentQuestion ||
@@ -203,26 +254,50 @@ export default function AssessmentPage() {
     userId,
   ]);
 
-  if (!ASSESSMENT_ENABLED) {
-    return (
-      <main className="mx-auto flex min-h-[70vh] max-w-xl items-center px-4 py-12">
-        <Card className="w-full p-8">
-          <h1 className="text-2xl font-semibold text-slate-900">Assessment unavailable</h1>
-          <p className="mt-3 text-slate-600">{error ?? missingFirebaseMessage}</p>
-        </Card>
-      </main>
-    );
+  if (loading) {
+    return null;
   }
 
-  if (ready === false) {
+  if (!ok) {
+    const core = [
+      "FIREBASE_API_KEY",
+      "FIREBASE_AUTH_DOMAIN",
+      "FIREBASE_PROJECT_ID",
+      "FIREBASE_APP_ID",
+    ] as const;
+    const present = (key: (typeof core)[number]) => (readEnv(key) ? "✅" : "❌");
+    const hint = (() => {
+      const message = diag?.errorMessage || "";
+      if (message.includes("auth/unauthorized-domain")) {
+        return "Firebase Auth: add your Vercel domain(s) in Authentication → Settings → Authorized domains.";
+      }
+      if (message.includes("permission-denied")) {
+        return "Firestore rules may block writes. For dev, allow auth users in Firestore rules and Publish.";
+      }
+      if (message.includes("No Firebase App")) {
+        return "Client envs likely missing. Ensure NEXT_PUBLIC_FIREBASE_ are set in Vercel (Preview + Production) and redeploy.";
+      }
+      return null;
+    })();
+
     return (
       <main className="mx-auto flex min-h-[70vh] max-w-xl items-center px-4 py-12">
         <Card className="w-full p-8">
           <h1 className="text-2xl font-semibold text-slate-900">Assessment unavailable</h1>
           <p className="mt-3 text-slate-600">{error ?? missingFirebaseMessage}</p>
-          {process.env.NODE_ENV !== "production" ? (
-            <p className="mt-3 text-xs text-slate-500">Init failed — open console for details.</p>
-          ) : null}
+          <p className="mt-3 text-xs text-slate-500">
+            Diagnostics (no secrets):
+            <br />
+            Error: {String(diag?.errorCode || "n/a")} — {String(diag?.errorMessage || "unknown")}
+            <br />
+            Core env presence: {core.map((k) => `${k}:${present(k)}`).join("  ")}
+            {process.env.NODE_ENV !== "production" && hint ? (
+              <>
+                <br />
+                Hint: {hint}
+              </>
+            ) : null}
+          </p>
         </Card>
       </main>
     );
@@ -239,11 +314,11 @@ export default function AssessmentPage() {
     );
   }
 
-  if (ready === null || !authChecked || !userId) {
+  if (!authChecked || !userId) {
     return null;
   }
 
-  if (ready !== true || !dbInstance || !sessionId || !currentQuestion) {
+  if (!dbInstance || !sessionId || !currentQuestion) {
     return (
       <main className="mx-auto flex min-h-[70vh] max-w-xl items-center px-4 py-12">
         <Card className="w-full p-8 text-center">
